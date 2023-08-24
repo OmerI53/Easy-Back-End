@@ -37,7 +37,7 @@ class DeviceServiceTest {
         System.out.println(token.length());
 
         DeviceEntity deviceToDelete = DeviceEntity.builder()
-                .deviceId(UUID.fromString("88fd8c46-e469-4a86-9e66-c1a1f33d58d5"))
+                .deviceId(UUID.fromString("38a2772f-7efa-46c2-a7cd-2968def72ca8"))
                 .build();
 
         deviceRepository.delete(deviceToDelete);
