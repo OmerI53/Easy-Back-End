@@ -1,10 +1,7 @@
 package com.example.Easy.Entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.checkerframework.checker.units.qual.C;
 
 import java.util.UUID;
@@ -15,12 +12,15 @@ import java.util.UUID;
 @Setter
 @RequiredArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class NewsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     @Column(name = "newsId",nullable = false,updatable = true,length = 30)
-    private Long newsId;
+    private int newsId;
 
     @Column(name = "categories",nullable = true,updatable = true)
     private String categories;
