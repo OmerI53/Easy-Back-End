@@ -33,7 +33,7 @@ class DeviceServiceTest {
     }
     @Test
     void deleteDeviceTest() {
-        String token = "e_5VwVHYRJG8J3GrGdxmol:APA91bG09ABYw_kKPPBZUCCpZddOPzB2b9Edyhl562UCSqwd4uLSFmFMoDwiE0fyobpZ4TkCGw-dbIs_dyHf3rp5Gu05hCN2X-_y18GTWoR0_ZKnuIvWlh3dmIUnYqRiJEmKOf8ar7oU";
+        String token = "da37GPpPQR2t325Jg8sR-v:APA91bGcvhE_J3gX2udxEPJWgeR_M5e4y_jXpWlNozJnann2493qPn_1mewKchPvigMofwSLBH5PAr-msEL8DZbvURberbuA6667jsk-53JPvPlK5ugbvkSlP0CBADXW8xOLAbFq5lZa";
         System.out.println(token.length());
 
         DeviceEntity deviceToDelete = DeviceEntity.builder()
