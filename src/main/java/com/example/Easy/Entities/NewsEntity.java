@@ -10,10 +10,7 @@ import java.util.UUID;
 @Table(name ="News")
 @Getter
 @Setter
-@RequiredArgsConstructor
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class NewsEntity {
     @Id
