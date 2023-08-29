@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.example.Easy.Services.NewsCategoryServiceTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.532 s - in com.example.Easy.Services.NewsCategoryServiceTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.615 s - in com.example.Easy.Services.NewsCategoryServiceTest
