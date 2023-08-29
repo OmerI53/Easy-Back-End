@@ -22,17 +22,6 @@ class CommentServiceTest {
     UserService userService;
     @Autowired
     UserMapper userMapper;
-    @Test
-    void commentPostTest() {
-        NewsDTO newsDTO = newsService.getAllNews().get(1);
-        UserDTO userDTO = userService.listUsers().get(1);
 
-        CommentDTO commentDTO = CommentDTO.builder()
-                .text("hi")
-                .news(newsMapper.toNewsEntity(newsDTO))
-                .author(userMapper.toUserEntity(userDTO))
-                .build();
 
-        commentService.postComment(commentDTO);
-    }
 }

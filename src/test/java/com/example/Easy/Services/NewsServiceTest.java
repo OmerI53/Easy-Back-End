@@ -80,6 +80,7 @@ class NewsServiceTest {
     void postTest() {
         UserDTO userDTO =userService.listUsers().get(1);
         NewsDTO new1 = NewsDTO.builder()
+                .creationTime(LocalDateTime.now())
                 .title("test9")
                 .image("https://www.google.com/search?q=machine+learning&sca_esv=559361602&tbm=isch&source=lnms&sa=X&ved=2ahUKEwiC5--r-PKAAxVSYPEDHVsTCq4Q_AUoAnoECAIQBA&biw=1728&bih=931&dpr=2#imgrc=MljwM1234Xl_pM")
                 .text("bootstrap9")

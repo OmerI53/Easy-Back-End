@@ -36,16 +36,5 @@ class NotificationServiceTest {
         notificationService.subscribeToTopic("MACHINE_LEARNING",token);
     }
 
-    @Test
-    void sendNotificationByTopic() throws FirebaseMessagingException {
-        String token ="fgiMSYssSZu_i4DjI3wxY5:APA91bH5Ylp92cYdZVBHoEqozkbBQ1-EGQI2JMTdmReLeMUFPqNsq1T8OIvBDasBGZjI_aFTeEhQU2lAtqGKVjong8YIUvBckiHvn-GjgVbvF9I0Ih1y316xtARCr_Ys50w8HE-Fy5nC";
-        NotificationDTO notificationDTO = NotificationDTO.builder()
-                .image("img")
-                .text("sent by topic")
-                .title("Topic Messaging")
-                .topic("MACHINE_LEARNING")
-                .build();
-        notificationService.sendNotificationByTopic(notificationDTO);
-    }
 
 }

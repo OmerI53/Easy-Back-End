@@ -28,20 +28,5 @@ public class DeviceController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{deviceId}")
-    public ResponseEntity removeDeviceById(@PathVariable("deviceId")UUID deviceId){
-        deviceService.removeDeviceById(deviceId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    @GetMapping
-    public List<DeviceDTO> listAllDevices(){
-        return deviceService.listAllDevices();
-    }
-
-    @PatchMapping("{deviceId}")
-    public ResponseEntity patchDevice(@PathVariable("deviceId") UUID deviceId,@RequestBody DeviceDTO deviceDTO){
-        deviceService.patchDevice(deviceId,deviceDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 }
