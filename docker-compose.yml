@@ -11,5 +11,7 @@ services:
   mysql:
     image: mysql:8.0.28
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: easyadmin
+      MYSQL_ROOT_PASSWORD: mrpassword
+      MYSQL_DATABASE: mdatabase
+      MYSQL_USER: mami
+      MYSQL_PASSWORD: mami1234
