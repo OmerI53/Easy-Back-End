@@ -15,24 +15,8 @@ import java.io.IOException;
 @SpringBootApplication
 public class EasyApplication {
 
-
-	//Firebase Messaging set-up
-	@Bean
-	FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
-		return FirebaseMessaging.getInstance(firebaseApp);
-	}
-
-	@Bean
-	public FirebaseApp firebaseApp () throws IOException {
-		//Getting credentials from resouce file
-		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setCredentials(GoogleCredentials.fromStream(new ClassPathResource("serviceAccountKey.json").getInputStream()))
-				.build();
-		return FirebaseApp.initializeApp(options);
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(EasyApplication.class, args);
-	}
+    public static void main(String[] args){
+        SpringApplication.run(EasyApplication.class,args);
+    }
 
 }

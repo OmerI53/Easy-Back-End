@@ -1,12 +1,11 @@
 package com.example.Easy.Services;
 
-import com.example.Easy.Entities.UserEntity;
+import com.example.Easy.Entites.UserEntity;
 import com.example.Easy.Mappers.UserMapper;
 import com.example.Easy.Models.UserDTO;
-import com.example.Easy.Repository.UserRepository;
-import com.google.firebase.messaging.FirebaseMessagingException;
+import com.example.Easy.Repositories.UserRepository;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,41 +16,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    NotificationService notificationService;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
-    public void createNewUser(UserDTO userDTO){
-        //TODO cant since a real FCM token is needed
-        //notificationService.subscribeToTopic("All",userDTO.getUserToken());
+    private UserRepository userRepository;
+    private UserMapper userMapper;
+
+    public void AddNewUser(UserDTO userDTO){
         userRepository.save(userMapper.toUserEntity(userDTO));
     }
 
-    public void deleteUser(UUID userId){
-        userRepository.deleteById(userId);
+    public void DeleteUser(UUID uuid){
+        userRepository.deleteById(uuid);
     }
-
-    public List<UserDTO> listUsers() {
-        return userRepository.findAll()
-                .stream().map(userMapper::toUserDTO)
+    public void DeleteAllUsers(){
+        userRepository.deleteAll();
+    }
+    public List<UserDTO> getAllUsers(){
+        return userRepository.findAll().stream().map(userMapper::toUserDTO)
                 .collect(Collectors.toList());
     }
+    public UserDTO getUserByID(UUID id){
 
-    public UserDTO getUserById(UUID userId) {
-        return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
+        return userMapper.toUserDTO(userRepository.findById(id).orElse(null));
     }
-    public void patchUserById(UUID userId, UserDTO userDTO) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
-        if(user==null)
-                return;
-        if(userDTO.getUserToken()!=null && !userDTO.getUserToken().equals(""))
-            user.setUserToken(userDTO.getUserToken());
-        if(userDTO.getName()!=null && !userDTO.getName().equals(""))
-            user.setName(userDTO.getName());
-        if(userDTO.getImage()!=null && !userDTO.getName().equals(""))
-            user.setImage(userDTO.getImage());
-        if(userDTO.getRole()!=null)
-            user.setRole(userDTO.getRole());
-        userRepository.save(user);
-    }
+
 }

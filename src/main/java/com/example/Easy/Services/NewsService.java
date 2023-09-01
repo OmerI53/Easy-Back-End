@@ -1,35 +1,23 @@
 package com.example.Easy.Services;
 
-import com.example.Easy.Entities.NewsEntity;
-import com.example.Easy.Entities.UserEntity;
-import com.example.Easy.Mappers.NewsCategoryMapper;
+import com.example.Easy.Entites.NewsEntity;
 import com.example.Easy.Mappers.NewsMapper;
-import com.example.Easy.Models.NewsCategoryDTO;
 import com.example.Easy.Models.NewsDTO;
-import com.example.Easy.Repository.NewsRepository;
+import com.example.Easy.Repositories.NewsRepository;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class NewsService {
-    @Autowired
-    UserService userService;
-    @Autowired
-    NewsCategoryMapper newsCategoryMapper;
-    @Autowired
-    NewsCategoryService newsCategoryService;
 
-    private final NewsRepository newsRepository;
-    private final NewsMapper newsMapper;
+    private NewsRepository newsRepository;
+    private NewsMapper newsMapper;
 
     public List<NewsDTO> getAllNews() {
         return newsRepository.findAll()
@@ -37,29 +25,16 @@ public class NewsService {
                 .collect(Collectors.toList());
     }
 
-    public List<NewsDTO> getNewsByTitle(String title) {
+    public NewsDTO getNewsByID(UUID id){
+
+        return newsMapper.toNewsDTO(newsRepository.findById(id).orElse(null));
+    }
+    public List<NewsDTO> getNewsByTitle(String title){
         return newsRepository.findByTitle(title)
                 .stream().map(newsMapper::toNewsDTO)
                 .collect(Collectors.toList());
     }
-    public NewsDTO getNewsById(UUID newsId) {
-        return newsMapper.toNewsDTO(newsRepository.findById(newsId).orElse(null));
-    }
 
-    public void postNews(NewsDTO newsDTO) {
-        newsRepository.save(newsMapper.toNewsEntity(newsDTO));
-    }
-
-    public void deletePostById(UUID newsUUID) {
-        newsRepository.deleteById(newsUUID);
-    }
-
-
-    public Set<NewsEntity> getNewsByCategoryId(Long category) {
-        NewsCategoryDTO newsCategoryDTO = newsCategoryService.getNewsCategoryById(category);
-        Set<NewsEntity> newsEntityList = newsCategoryService.getCategoryNews(newsCategoryDTO);
-        return newsEntityList;
-    }
 
 
 }

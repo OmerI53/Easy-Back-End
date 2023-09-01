@@ -11,33 +11,31 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 public class UserController {
     @Autowired
     UserService userService;
 
     @PostMapping
-    public ResponseEntity createNewUser(@RequestBody UserDTO userDTO){
-        //TODO cant bootstrap data since a real FCM is needed
-        userService.createNewUser(userDTO);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity AddNewUser(@RequestBody UserDTO userDTO){
+        userService.AddNewUser(userDTO);
+        return new ResponseEntity((HttpStatus.CREATED));
     }
-    @DeleteMapping("/{userId}")
-    public void deleteUserById(@PathVariable("userId")UUID userId){
-        userService.deleteUser(userId);
+    @DeleteMapping("/{userID}")
+    public void deleteUserByID(@PathVariable("userID")UUID userID){
+        userService.getUserByID(userID);
     }
-    @PatchMapping("/{userId}")
-    public void patchUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
-        userService.patchUserById(userId,userDTO);
-
+    @PatchMapping("/{userID}")
+    public void deleteAllUsers(@PathVariable("userID")UUID userID){
+        userService.DeleteAllUsers();
     }
     @GetMapping("/all")
-    public List<UserDTO> listUsers(){
-        return userService.listUsers();
+    public List<UserDTO> getAllUsers(){
+        return userService.getAllUsers();
+    }
+    @GetMapping("/{userID}")
+    public UserDTO getUserByID(@PathVariable("userID") UUID uuid){
+        return userService.getUserByID(uuid);
     }
 
-    @GetMapping("/{userId}")
-    public UserDTO getUserById(@PathVariable("userId") UUID userId){
-        return userService.getUserById(userId);
-    }
 }
