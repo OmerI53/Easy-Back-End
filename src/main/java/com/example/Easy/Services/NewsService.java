@@ -13,6 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -91,7 +92,7 @@ public class NewsService {
                 .image(newsDTO.getImage())
                 .author(author)
                 .category(newsCategoryRepository.findById(newsDTO.getCategory().getCategoryId()).orElse(null))
-                .creationTime(newsDTO.getCreationTime())
+                .creationTime(LocalDateTime.now())
                 .title(newsDTO.getTitle())
                 .build();
         newsRepository.save(news);

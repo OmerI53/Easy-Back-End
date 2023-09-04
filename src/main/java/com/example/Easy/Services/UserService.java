@@ -14,12 +14,10 @@ import com.example.Easy.Repository.NotificationRepository;
 import com.example.Easy.Repository.RecordsRepository;
 import com.example.Easy.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -42,9 +40,7 @@ public class UserService {
     public UserDTO createNewUser(UserDTO userDTO){
         //TODO cant since a real FCM token is needed
         //notificationService.subscribeToTopic("All",userDTO.getUserToken());
-        UserEntity user = userRepository.save(userMapper.toUserEntity(userDTO));
-        NewTopic topic = TopicBuilder.name(user.getUserId().toString()).build();
-        return userMapper.toUserDTO(user);
+        return null;
     }
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
@@ -180,5 +176,9 @@ public class UserService {
                 .collect(Collectors.toList());
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         return new PageImpl<>(recordsEntityList,pageRequest,recordsEntityList.size());
+    }
+
+    public UserDTO findUserByEmail(String email) {
+        return userMapper.toUserDTO(userRepository.findByEmail(email));
     }
 }

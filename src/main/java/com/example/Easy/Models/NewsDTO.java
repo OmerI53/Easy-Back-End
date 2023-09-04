@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 @Data
 @Builder
@@ -16,5 +17,6 @@ public class NewsDTO {
     private UserDTO author;
     private LocalDateTime creationTime;
     private NewsCategoryDTO category;
+    private List<CommentDTO> comments;
 
 }

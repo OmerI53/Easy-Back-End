@@ -1,17 +1,16 @@
 package com.example.Easy.Services;
 
 import com.example.Easy.Entities.NewsCategoryEntity;
-import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Mappers.NewsCategoryMapper;
 import com.example.Easy.Models.NewsCategoryDTO;
-import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
-import com.example.Easy.Repository.NewsRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,8 +19,11 @@ public class NewsCategoryService {
     private final NewsCategoryRepository newsCategoryRepository;
     private final NewsCategoryMapper newsCategoryMapper;
 
-    public void addNewCategory(NewsCategoryDTO newsCategoryDTO) {
-        NewsCategoryEntity newsCategoryEntity = newsCategoryMapper.toNewsCategoryEntity(newsCategoryDTO);
+    public void addNewCategory(NewsCategoryDTO categoryDTO) {
+        NewsCategoryEntity newsCategoryEntity = NewsCategoryEntity.builder()
+                .name(categoryDTO.getName())
+                .parent(newsCategoryRepository.findByname(categoryDTO.getParent().getName()))
+                .build();
         newsCategoryRepository.save(newsCategoryEntity);
     }
 
@@ -41,27 +43,30 @@ public class NewsCategoryService {
                 .collect(Collectors.toList());
     }
 
-    public Map<String,Map> mapjson(){
+    public Map<String,List> getCategoriesHierarchy(){
         List<NewsCategoryEntity> roots = newsCategoryRepository.findByparent(null);
-        Map<String,Map> map = new HashMap<>();
+        Map<String,List> map = new HashMap<>();
         for(NewsCategoryEntity root : roots){
             if(root.getChildren().isEmpty())
                 map.put(root.getName(),null);
             else {
-                for(NewsCategoryEntity children : root.getChildren())
-                    map.put(root.getName(),recursive(children));
+                map.put(root.getName(),new LinkedList());
+                for(NewsCategoryEntity children : root.getChildren()){
+                    map.get(root.getName()).add(subcats(children));
+                }
             }
         }
         return map;
     }
-    public Map<String,Map> recursive(NewsCategoryEntity news){
-        Map<String,Map> map = new HashMap<>();
-        if(news .getChildren().isEmpty()){
-            map.put(news.getName(),null);
+    public Map<String,List> subcats(NewsCategoryEntity node){
+        Map<String,List> map = new HashMap<>();
+        if(node.getChildren().isEmpty()){
+            map.put(node.getName(),null);
             return map;
         }
-        for(NewsCategoryEntity children : news.getChildren()){
-            map.put(news.getName(),recursive(children));
+        map.put(node.getName(),new LinkedList());
+        for(NewsCategoryEntity children : node.getChildren()){
+            map.get(node.getName()).add(subcats(children));
         }
         return map;
     }

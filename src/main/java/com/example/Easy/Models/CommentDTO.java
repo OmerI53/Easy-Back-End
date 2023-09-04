@@ -1,7 +1,7 @@
 package com.example.Easy.Models;
 
-import com.example.Easy.Entities.NewsEntity;
-import com.example.Easy.Entities.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +11,8 @@ import java.util.UUID;
 public class CommentDTO {
     private UUID commentId;
     private String text;
+    @JsonIgnoreProperties({"image","userToken","role"})
     private UserDTO author;
-    private NewsDTO news;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private UUID newsId;
 }

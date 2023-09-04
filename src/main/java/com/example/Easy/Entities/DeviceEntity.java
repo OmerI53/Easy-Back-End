@@ -5,7 +5,6 @@ import com.google.firebase.database.annotations.NotNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.checkerframework.common.aliasing.qual.Unique;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;

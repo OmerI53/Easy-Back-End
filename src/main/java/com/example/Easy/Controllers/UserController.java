@@ -44,6 +44,10 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
+    @GetMapping("/email/{email}")
+    public UserDTO getUserByEmail(@PathVariable("email") String email){
+        return userService.findUserByEmail(email);
+    }
     @PostMapping("/follow/{userId}")
     public void followUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
         userService.followUserById(userId,userDTO);
@@ -81,5 +85,6 @@ public class UserController {
                                                @RequestParam(required = false) String sortBy){
         return userService.getUserRecordsById(userId,pageNumber,pageSize,sortBy);
     }
+
 
 }
