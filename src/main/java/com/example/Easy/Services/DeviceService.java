@@ -16,7 +16,4 @@ public class DeviceService {
     private DeviceMapper deviceMapper;
     private DeviceController deviceController;
 
-    public void findDeviceByID(UUID uuid){
-
-    }
 }
