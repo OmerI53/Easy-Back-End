@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface NewsRepository extends JpaRepository<NewsEntity, UUID> {
     List<NewsEntity> findByTitle(String title);
+    List<NewsEntity> findByAuthor(UserEntity author);
 
 }
