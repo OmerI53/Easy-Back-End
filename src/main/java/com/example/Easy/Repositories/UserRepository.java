@@ -1,6 +1,6 @@
 package com.example.Easy.Repositories;
 
-import com.example.Easy.Entites.UserEntity;
+import com.example.Easy.Entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

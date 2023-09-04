@@ -1,8 +1,8 @@
 package com.example.Easy.Repositories;
 
-import com.example.Easy.Entites.NewsEntity;
-import com.example.Easy.Entites.RecordsEntity;
-import com.example.Easy.Entites.UserEntity;
+import com.example.Easy.Entities.NewsEntity;
+import com.example.Easy.Entities.RecordsEntity;
+import com.example.Easy.Entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

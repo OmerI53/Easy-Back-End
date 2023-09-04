@@ -1,6 +1,6 @@
 package com.example.Easy.Mappers;
 
-import com.example.Easy.Entites.DeviceEntity;
+import com.example.Easy.Entities.DeviceEntity;
 import com.example.Easy.Models.DeviceDTO;
 
 public interface DeviceMapper {

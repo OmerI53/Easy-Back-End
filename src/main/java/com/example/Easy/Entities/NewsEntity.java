@@ -1,4 +1,4 @@
-package com.example.Easy.Entites;
+package com.example.Easy.Entities;
 
 import com.google.firebase.database.annotations.NotNull;
 import jakarta.persistence.*;
@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;

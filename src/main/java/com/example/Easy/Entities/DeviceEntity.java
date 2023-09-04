@@ -1,4 +1,4 @@
-package com.example.Easy.Entites;
+package com.example.Easy.Entities;
 
 import com.example.Easy.Models.DeviceType;
 import com.google.firebase.database.annotations.NotNull;
@@ -16,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@Table(name = "devices")
 public class DeviceEntity {
     @Id
     @UuidGenerator

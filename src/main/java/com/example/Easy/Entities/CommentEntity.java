@@ -1,4 +1,4 @@
-package com.example.Easy.Entites;
+package com.example.Easy.Entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.firebase.database.annotations.NotNull;

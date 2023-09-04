@@ -1,10 +1,8 @@
 package com.example.Easy.Services;
 
-import com.example.Easy.Entites.UserEntity;
 import com.example.Easy.Mappers.UserMapper;
 import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repositories.UserRepository;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

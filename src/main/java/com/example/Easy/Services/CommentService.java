@@ -1,6 +1,6 @@
 package com.example.Easy.Services;
 
-import com.example.Easy.Entites.CommentEntity;
+import com.example.Easy.Entities.CommentEntity;
 import com.example.Easy.Mappers.CommentMapper;
 import com.example.Easy.Models.CommentDTO;
 import com.example.Easy.Repositories.CommentRepository;
