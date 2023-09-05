@@ -36,7 +36,7 @@ public class JwtService {
     }
     public String generateToken(Map<String,Object> extraClaims, UserDetails user){
         Date now = new Date();
-        Date validity = new Date(now.getTime() + 3600000*24);
+        Date validity = new Date(now.getTime() + 3600000*24*24); //Valid for a week
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(user.getUsername())

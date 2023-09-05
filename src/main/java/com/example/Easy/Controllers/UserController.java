@@ -4,26 +4,18 @@ import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Models.RecordsDTO;
 import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    UserService userService;
 
-    @PostMapping
-    public ResponseEntity createNewUser(@RequestBody UserDTO userDTO){
-        //TODO cant bootstrap data since a real FCM is needed
-        userService.createNewUser(userDTO);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
+    private final UserService userService;
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable("userId") UUID userId){
         userService.deleteUser(userId);

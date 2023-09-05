@@ -2,7 +2,7 @@ package com.example.Easy.Controllers;
 
 import com.example.Easy.Models.NewsCategoryDTO;
 import com.example.Easy.Services.NewsCategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +12,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("api/categories")
+@RequiredArgsConstructor
 public class NewsCategoryController {
 
-    @Autowired
-    NewsCategoryService newsCategoryService;
+    private final NewsCategoryService newsCategoryService;
     @GetMapping("/hierarchy")
     public Map<String, List> getCategories(){
         return newsCategoryService.getCategoriesHierarchy();

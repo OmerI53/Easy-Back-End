@@ -27,8 +27,10 @@ public class EasyApplication {
 	@Bean
 	public FirebaseApp firebaseApp () throws IOException {
 		//Getting credentials from resouce file
+		GoogleCredentials credentials = GoogleCredentials.fromStream(new ClassPathResource("serviceAccountKey.json").getInputStream());
 		FirebaseOptions options = new FirebaseOptions.Builder()
-				.setCredentials(GoogleCredentials.fromStream(new ClassPathResource("serviceAccountKey.json").getInputStream()))
+				.setCredentials(credentials)
+				.setStorageBucket("easy-newss.appspot.com")
 				.build();
 		return FirebaseApp.initializeApp(options);
 	}

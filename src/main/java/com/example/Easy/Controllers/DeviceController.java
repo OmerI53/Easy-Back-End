@@ -3,7 +3,7 @@ package com.example.Easy.Controllers;
 import com.example.Easy.Models.DeviceDTO;
 import com.example.Easy.Services.DeviceService;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +13,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/device")
+@RequiredArgsConstructor
 public class DeviceController {
 
-    @Autowired
-    DeviceService deviceService;
+    private final DeviceService deviceService;
 
 
     @PostMapping("/new")

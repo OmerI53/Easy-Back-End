@@ -1,23 +1,23 @@
 package com.example.Easy.Controllers;
 
-import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Services.NewsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Set;
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/news")
+@RequiredArgsConstructor
 public class NewsController {
-    @Autowired
-    NewsService newsService;
+
+    private final NewsService newsService;
 
     @GetMapping
     public Page<NewsDTO> getAllNews(@RequestParam(required = false) Integer pageNumber,
@@ -42,7 +42,11 @@ public class NewsController {
                                         @RequestParam(required = false) String sortBy){
         return newsService.getNewsByTitle(title,pageNumber,pageSize,sortBy);
     }
-    @PostMapping()
+    @PostMapping("/image")
+    public String postImages(@RequestBody MultipartFile file) throws IOException {
+        return newsService.uploadImage(file);
+    }
+    @PostMapping
     public ResponseEntity postNews(@RequestBody NewsDTO newsDTO){
         newsService.postNews(newsDTO);
         return new ResponseEntity(HttpStatus.CREATED);

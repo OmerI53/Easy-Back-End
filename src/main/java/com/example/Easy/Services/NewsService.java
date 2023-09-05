@@ -7,12 +7,22 @@ import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
 import com.example.Easy.Repository.NewsRepository;
 import com.example.Easy.Repository.UserRepository;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -21,14 +31,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class NewsService {
-    @Autowired
-    NewsCategoryService newsCategoryService;
-
     private final NewsCategoryRepository newsCategoryRepository;
     private final UserRepository userRepository;
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
-    private final KafkaTemplate<String,String> kafkaTemplate;
 
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
@@ -102,8 +108,26 @@ public class NewsService {
         newsRepository.deleteById(newsUUID);
     }
 
+    private final static String DOWNLOAD_URL ="https://firebasestorage.googleapis.com/v0/b/easy-newss.appspot.com/o/%s?alt=media&";
+    public String uploadImage(MultipartFile file) throws IOException {
+        String imageName = generateFileName(file.getOriginalFilename());
+        BlobId blobId = BlobId.of("easy-newss.appspot.com", imageName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId)
+                .setContentType(file.getContentType())
+                .build();
+        Storage storage = StorageOptions.newBuilder()
+                .setCredentials(GoogleCredentials.fromStream(new ClassPathResource("serviceAccountKey.json").getInputStream()))
+                .build().getService();
 
-
+        storage.create(blobInfo, file.getInputStream());
+        return String.format(DOWNLOAD_URL,imageName);
+    }
+    private String generateFileName(String originalFileName) {
+        return UUID.randomUUID().toString() + "." + getExtension(originalFileName);
+    }
+    private String getExtension(String originalFileName) {
+        return StringUtils.getFilenameExtension(originalFileName);
+    }
 
 
 }

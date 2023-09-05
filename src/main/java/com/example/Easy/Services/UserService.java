@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,12 +37,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final RecordsRepository recordsRepository;
     private final RecordsMapper recordsMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserDTO createNewUser(UserDTO userDTO){
-        //TODO cant since a real FCM token is needed
-        //notificationService.subscribeToTopic("All",userDTO.getUserToken());
-        return null;
-    }
+
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
     private final static String DEFAULT_SORT="name";
@@ -96,6 +94,8 @@ public class UserService {
             user.setName(userDTO.getName());
         if(userDTO.getImage()!=null && !userDTO.getName().equals(""))
             user.setImage(userDTO.getImage());
+        if(userDTO.getPassword()!=null && !userDTO.getPassword().equals(""))
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         if(userDTO.getRole()!=null)
             user.setRole(userDTO.getRole());
         userRepository.save(user);
@@ -147,7 +147,6 @@ public class UserService {
 
 
     public void readNews(UUID userId, NewsDTO newsDTO) {
-        // TODO definitely needs to be optimized
         UserEntity user = userRepository.findById(userId).orElse(null);
         NewsEntity news = newsRepository.findById(newsDTO.getNewsId()).orElse(null);
         RecordsEntity records = recordsRepository.findByUserAndNews(user,news);

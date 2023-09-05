@@ -3,22 +3,19 @@ package com.example.Easy.Controllers;
 import com.example.Easy.Models.NotificationDTO;
 import com.example.Easy.Services.NotificationService;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/notification")
+@RequiredArgsConstructor
 public class NotificationController {
 
-    @Autowired
-    NotificationService notificationService;
+    private final NotificationService notificationService;
 
     @PostMapping
     public void postNotificationByToken(@RequestBody NotificationDTO notificationDTO) throws FirebaseMessagingException {

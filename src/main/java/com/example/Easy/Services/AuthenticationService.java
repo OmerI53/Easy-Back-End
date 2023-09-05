@@ -24,6 +24,8 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
         userRepository.save(userEntity);
+        //TODO cant since a real FCM token is needed
+        //notificationService.subscribeToTopic("All",userDTO.getUserToken());
         return jwtService.generateToken(userEntity);
     }
 

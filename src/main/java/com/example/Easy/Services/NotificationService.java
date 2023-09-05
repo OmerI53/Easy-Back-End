@@ -1,23 +1,17 @@
 package com.example.Easy.Services;
 
-import com.example.Easy.Entities.NotificationEntity;
 import com.example.Easy.Mappers.NotificationMapper;
 import com.example.Easy.Models.NotificationDTO;
 import com.example.Easy.Repository.NotificationRepository;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
-import com.google.firebase.messaging.*;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +20,7 @@ public class NotificationService {
 
     private  final NotificationRepository notificationRepository;
     private  final NotificationMapper notificationMapper;
-
-    @Autowired
-    private FirebaseMessaging firebaseMessaging;
+    private final FirebaseMessaging firebaseMessaging;
 
     public String sendNotificationByToken(NotificationDTO notificationDTO) throws FirebaseMessagingException {
         if(notificationDTO.getUserToken()==null)

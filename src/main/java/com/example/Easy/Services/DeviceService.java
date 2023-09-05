@@ -6,7 +6,6 @@ import com.example.Easy.Models.DeviceDTO;
 import com.example.Easy.Repository.DeviceRepository;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,14 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DeviceService {
-
-    @Autowired
-    NotificationService notificationService;
+    private final NotificationService notificationService;
     private final DeviceRepository deviceRepository;
     private final DeviceMapper deviceMapper;
     private final static int DEFAULT_PAGE=0;
