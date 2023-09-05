@@ -1,5 +1,6 @@
 package com.example.Easy.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,6 +15,8 @@ public class NewsDTO {
     private String title;
     private String text;
     private String image;
+
+    @JsonIgnoreProperties({"image","userToken","role","email","password"})
     private UserDTO author;
     private LocalDateTime creationTime;
     private NewsCategoryDTO category;

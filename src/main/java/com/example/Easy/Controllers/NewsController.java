@@ -31,7 +31,7 @@ public class NewsController {
                                              @RequestParam(required = false) Integer pageNumber,
                                              @RequestParam(required = false) Integer pageSize,
                                              @RequestParam(required = false) String sortBy){
-        return newsService.getNewsByCategoryId(category,pageNumber,pageSize,sortBy);
+        return newsService.getNewsByCategoryName(category,pageNumber,pageSize,sortBy);
     }
 
 

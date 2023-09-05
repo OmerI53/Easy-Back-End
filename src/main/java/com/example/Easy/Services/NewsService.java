@@ -4,7 +4,6 @@ import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Models.NewsDTO;
-import com.example.Easy.Models.RecordsDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
 import com.example.Easy.Repository.NewsRepository;
 import com.example.Easy.Repository.UserRepository;
@@ -27,8 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +47,11 @@ public class NewsService {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         return newsRepository.findAll(pageRequest).map(newsMapper::toNewsDTO);
     }
-    public Page<NewsDTO> getNewsByCategoryId(String category,Integer pageNumber, Integer pageSize, String sortBy) {
+    public Page<NewsDTO> getNewsByCategoryName(String category, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         List<NewsDTO> newsEntities = newsCategoryRepository.findByname(category).getNews()
                 .stream().map(newsMapper::toNewsDTO).toList();
-        return new PageImpl<NewsDTO>(pagedListHolderFromRequest(pageRequest).getPageList());
+        return new PageImpl<NewsDTO>(pagedListHolderFromRequest(pageRequest,newsEntities).getPageList());
     }
     public PageRequest buildPageRequest(Integer pageNumber,Integer pageSize,String sortBy){
         // if not initilized set it to default
@@ -110,12 +108,23 @@ public class NewsService {
     }
 
     public Page<NewsDTO> getRecommendedNews(UUID userId,Integer pageNumber, Integer pageSize, String sortBy){
-
-        Page<RecordsDTO> records = userService.getUserRecordsById(userId,null,null,"repeatedRead");
-        for (RecordsDTO rec:records.getContent()) {
-            System.out.println(rec.getRepeatedRead());
+        List<NewsDTO> newsDTOS = new LinkedList<>();
+        Map<String,Integer> rep = new HashMap<>();
+        userService.getUserRecordsById(userId,null,null,"repeatedRead")
+                .stream().forEach(x->{
+                    if(rep.containsKey(x.getNewsCategory().getName()))
+                       rep.put(x.getNewsCategory().getName(),rep.get(x.getNewsCategory().getName())+x.getRepeatedRead());
+                    else
+                        rep.put(x.getNewsCategory().getName(),x.getRepeatedRead());
+                });
+        for(String category:rep.keySet()){
+            Integer count = (int) (rep.get(category)*0.18)+1;
+            List<NewsDTO> newsByCategory = getNewsByCategoryName(category,null,count,null).stream().toList();
+            newsDTOS.addAll(newsByCategory);
         }
-        return null;
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest,newsDTOS).getPageList());
     }
     public String uploadImage(MultipartFile file) throws IOException {
         String imageName = generateFileName(file.getOriginalFilename());
@@ -136,8 +145,8 @@ public class NewsService {
     private String getExtension(String originalFileName) {
         return StringUtils.getFilenameExtension(originalFileName);
     }
-    private PagedListHolder<NewsDTO> pagedListHolderFromRequest(PageRequest pageRequest){
-        PagedListHolder<NewsDTO> pagedListHolder = new PagedListHolder<>();
+    private PagedListHolder<NewsDTO> pagedListHolderFromRequest(PageRequest pageRequest,List<NewsDTO> list){
+        PagedListHolder<NewsDTO> pagedListHolder = new PagedListHolder<>(list);
         pagedListHolder.setPageSize(pageRequest.getPageSize());
         pagedListHolder.setPage(pageRequest.getPageNumber());
         pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));

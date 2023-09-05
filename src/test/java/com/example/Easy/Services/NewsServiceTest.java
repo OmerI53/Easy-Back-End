@@ -93,7 +93,7 @@ class NewsServiceTest {
 
     @Test
     void getByCategoryTest() {
-        Page<NewsDTO> list = newsService.getNewsByCategoryId("cat1", 1, 25, "creationTime");
+        Page<NewsDTO> list = newsService.getNewsByCategoryName("cat1", 1, 25, "creationTime");
         System.out.println(list);
     }
 

@@ -134,7 +134,7 @@ public class UserService {
                 .stream().map(userMapper::toUserDTO)
                 .toList();
 
-        return new PageImpl<>(pagedListHolderFromRequest(pageRequest).getPageList());
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
 
     }
 
@@ -144,7 +144,7 @@ public class UserService {
         List<UserDTO> users= user.getFollowing()
                 .stream().map(userMapper::toUserDTO)
                 .toList();
-        return new PageImpl<>(pagedListHolderFromRequest(pageRequest).getPageList());
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
     }
 
 
@@ -179,8 +179,8 @@ public class UserService {
     public UserDTO findUserByEmail(String email) {
         return userMapper.toUserDTO(userRepository.findByEmail(email));
     }
-    private PagedListHolder<UserDTO> pagedListHolderFromRequest(PageRequest pageRequest){
-        PagedListHolder<UserDTO> pagedListHolder = new PagedListHolder<>();
+    private PagedListHolder<UserDTO> pagedListHolderFromRequest(PageRequest pageRequest,List<UserDTO> userDTOS){
+        PagedListHolder<UserDTO> pagedListHolder = new PagedListHolder<>(userDTOS);
         pagedListHolder.setPageSize(pageRequest.getPageSize());
         pagedListHolder.setPage(pageRequest.getPageNumber());
         pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
