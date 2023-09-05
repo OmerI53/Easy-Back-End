@@ -34,5 +34,5 @@ public class RecordsEntity {
     @ManyToOne
     private NewsEntity news;
 
-    private int readCount;
+    private int repeated_read;
 }
