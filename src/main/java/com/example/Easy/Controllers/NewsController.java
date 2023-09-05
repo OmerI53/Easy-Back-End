@@ -57,6 +57,12 @@ public class NewsController {
         newsService.deletePostById(newsUUID);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/recommendations/{userId}")
+    public Page<NewsDTO> getRecommendedNews(@PathVariable("userId") UUID userId,@RequestParam(required = false) Integer pageNumber,
+                                            @RequestParam(required = false) Integer pageSize,
+                                            @RequestParam(required = false) String sortBy){
+        return newsService.getRecommendedNews(userId,pageNumber,pageSize,sortBy);
+    }
 
 
 

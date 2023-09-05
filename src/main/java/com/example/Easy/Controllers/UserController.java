@@ -59,9 +59,9 @@ public class UserController {
     }
     @GetMapping("/following/{userId}")
     public Page<UserDTO> getAllFollowingById(@PathVariable("userId") UUID userId,
-                                             @RequestParam(required = false) Integer pageNumber,
-                                             @RequestParam(required = false) Integer pageSize,
-                                             @RequestParam(required = false) String sortBy){
+                                                        @RequestParam(required = false) Integer pageNumber,
+                                                        @RequestParam(required = false) Integer pageSize,
+                                                        @RequestParam(required = false) String sortBy){
         return userService.getAllFollowing(userId, pageNumber, pageSize, sortBy);
     }
 
@@ -77,6 +77,7 @@ public class UserController {
                                                @RequestParam(required = false) String sortBy){
         return userService.getUserRecordsById(userId,pageNumber,pageSize,sortBy);
     }
+
 
 
 }

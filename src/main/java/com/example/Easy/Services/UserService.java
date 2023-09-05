@@ -14,6 +14,8 @@ import com.example.Easy.Repository.NotificationRepository;
 import com.example.Easy.Repository.RecordsRepository;
 import com.example.Easy.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -131,8 +132,9 @@ public class UserService {
         UserEntity user = userRepository.findById(userId).orElse(null);
         List<UserDTO> users = user.getFollowers()
                 .stream().map(userMapper::toUserDTO)
-                .collect(Collectors.toList());
-        return new PageImpl<>(users,pageRequest,users.size());
+                .toList();
+
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest).getPageList());
 
     }
 
@@ -141,8 +143,8 @@ public class UserService {
         UserEntity user = userRepository.findById(userId).orElse(null);
         List<UserDTO> users= user.getFollowing()
                 .stream().map(userMapper::toUserDTO)
-                .collect(Collectors.toList());
-        return new PageImpl<>(users,pageRequest,users.size());
+                .toList();
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest).getPageList());
     }
 
 
@@ -169,15 +171,19 @@ public class UserService {
         //Default sortby is only for user
         if(sortBy==null || sortBy.equals(""))
             sortBy="recordId";
-        UserEntity user = userRepository.findById(userId).orElse(null);
-        List<RecordsDTO> recordsEntityList = recordsRepository.findByUser(user)
-                .stream().map(recordsMapper::toRecordsDTO)
-                .collect(Collectors.toList());
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        return new PageImpl<>(recordsEntityList,pageRequest,recordsEntityList.size());
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        return recordsRepository.findByUser(user,pageRequest).map(recordsMapper::toRecordsDTO);
     }
 
     public UserDTO findUserByEmail(String email) {
         return userMapper.toUserDTO(userRepository.findByEmail(email));
+    }
+    private PagedListHolder<UserDTO> pagedListHolderFromRequest(PageRequest pageRequest){
+        PagedListHolder<UserDTO> pagedListHolder = new PagedListHolder<>();
+        pagedListHolder.setPageSize(pageRequest.getPageSize());
+        pagedListHolder.setPage(pageRequest.getPageNumber());
+        pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
+        return pagedListHolder;
     }
 }

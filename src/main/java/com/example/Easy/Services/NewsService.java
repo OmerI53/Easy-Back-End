@@ -4,7 +4,7 @@ import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Models.NewsDTO;
-import com.example.Easy.Models.UserDTO;
+import com.example.Easy.Models.RecordsDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
 import com.example.Easy.Repository.NewsRepository;
 import com.example.Easy.Repository.UserRepository;
@@ -14,6 +14,8 @@ import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,13 +29,13 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class NewsService {
     private final NewsCategoryRepository newsCategoryRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
 
@@ -50,8 +52,8 @@ public class NewsService {
     public Page<NewsDTO> getNewsByCategoryId(String category,Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         List<NewsDTO> newsEntities = newsCategoryRepository.findByname(category).getNews()
-                .stream().map(newsMapper::toNewsDTO).collect(Collectors.toList());
-        return new PageImpl<>(newsEntities,pageRequest,newsEntities.size());
+                .stream().map(newsMapper::toNewsDTO).toList();
+        return new PageImpl<NewsDTO>(pagedListHolderFromRequest(pageRequest).getPageList());
     }
     public PageRequest buildPageRequest(Integer pageNumber,Integer pageSize,String sortBy){
         // if not initilized set it to default
@@ -85,10 +87,7 @@ public class NewsService {
 
     public Page<NewsDTO> getNewsByTitle(String title, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        List<NewsDTO> newsDTOS =newsRepository.findByTitle(title)
-                .stream().map(newsMapper::toNewsDTO)
-                .collect(Collectors.toList());
-        return new PageImpl<>(newsDTOS,pageRequest,newsDTOS.size());
+        return newsRepository.findByTitle(title,pageRequest).map(newsMapper::toNewsDTO);
     }
     public NewsDTO getNewsById(UUID newsId) {
         return newsMapper.toNewsDTO(newsRepository.findById(newsId).orElse(null));
@@ -110,6 +109,14 @@ public class NewsService {
         newsRepository.deleteById(newsUUID);
     }
 
+    public Page<NewsDTO> getRecommendedNews(UUID userId,Integer pageNumber, Integer pageSize, String sortBy){
+
+        Page<RecordsDTO> records = userService.getUserRecordsById(userId,null,null,"repeatedRead");
+        for (RecordsDTO rec:records.getContent()) {
+            System.out.println(rec.getRepeatedRead());
+        }
+        return null;
+    }
     public String uploadImage(MultipartFile file) throws IOException {
         String imageName = generateFileName(file.getOriginalFilename());
         BlobId blobId = BlobId.of("easy-newss.appspot.com", imageName);
@@ -129,13 +136,15 @@ public class NewsService {
     private String getExtension(String originalFileName) {
         return StringUtils.getFilenameExtension(originalFileName);
     }
-
-
-    private Page<NewsDTO> getRecommendedNews(UserDTO userDTO){
-
-
-        return null;
+    private PagedListHolder<NewsDTO> pagedListHolderFromRequest(PageRequest pageRequest){
+        PagedListHolder<NewsDTO> pagedListHolder = new PagedListHolder<>();
+        pagedListHolder.setPageSize(pageRequest.getPageSize());
+        pagedListHolder.setPage(pageRequest.getPageNumber());
+        pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
+    return pagedListHolder;
     }
+
+
 
 
 }
