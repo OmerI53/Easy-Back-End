@@ -17,12 +17,12 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
-@Table(name = "News")
+@Table(name = "comments")
 public class CommentEntity {
     @Id
     @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "newsId", length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    @Column(name = "commentId", length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID commentId;
 
     @NotNull

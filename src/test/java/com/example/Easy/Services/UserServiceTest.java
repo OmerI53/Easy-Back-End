@@ -1,12 +1,15 @@
 package com.example.Easy.Services;
 
+import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Models.UserDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 @SpringBootTest
@@ -14,38 +17,30 @@ class UserServiceTest {
 
     @Autowired
     UserService userService;
+    @Autowired
+    NewsService newsService;
+    @Autowired
+    AuthenticationService authenticationService;
 
     @Test
     void bootstrap(){
-        UserDTO user1 = UserDTO.builder()
-                .name("user1")
-                .userToken("1")
-                .image(null)
-                .role(1)
-                .build();
-        UserDTO user2 = UserDTO.builder()
-                .name("user2")
-                .userToken("2")
-                .role(1)
-                .image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png")
-                .build();
-        UserDTO user3 = UserDTO.builder()
-                .name("user3")
-                .userToken("3")
-                .role(1)
-                .image("https://t3.ftcdn.net/jpg/05/17/79/88/360_F_517798849_WuXhHTpg2djTbfNf0FQAjzFEoluHpnct.jpg")
-                .build();
-        UserDTO user4 = UserDTO.builder()
-                .name("user4")
-                .userToken("4")
-                .role(1)
-                .image("https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png")
-                .build();
+        Random random = new Random();
+        List<String> images = new LinkedList<>();
+        images.add("https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/800px-User_icon_2.svg.png");
+        images.add("https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png");
+        images.add("https://t3.ftcdn.net/jpg/05/17/79/88/360_F_517798849_WuXhHTpg2djTbfNf0FQAjzFEoluHpnct.jpg");
+        for (int i=0; i<10;i++){
+            UserDTO userDTO = UserDTO.builder()
+                    .name(String.format("user%d",i))
+                    .userToken(String.format("%d",i))
+                    .role(1)
+                    .image(images.get(random.nextInt(0,images.size())))
+                    .email(String.format("user%d@gmail.com",i))
+                    .password(String.format("user%d",i))
+                    .build();
 
-        userService.createNewUser(user1);
-        userService.createNewUser(user2);
-        userService.createNewUser(user3);
-        userService.createNewUser(user4);
+            authenticationService.register(userDTO);
+        }
     }
 
     @Test
@@ -56,7 +51,6 @@ class UserServiceTest {
                 .image(null)
                 .role(1)
                 .build();
-        userService.createNewUser(user1);
     }
     @Test
     void getAllUsers(){
@@ -79,6 +73,20 @@ class UserServiceTest {
                 .image("https://cdn-icons-png.flaticon.com/512/1053/1053244.png")
                 .build();
         userService.patchUserById(UUID.fromString("3b4e5a25-6e23-43f0-ae63-187fdc1cdfb9"),userDTO);
+    }
+
+    @Test
+    void readdata(){
+        Random random = new Random();
+        Page<UserDTO> allUsers = userService.listUsers(null,null,null);
+        Page<NewsDTO> allNews = newsService.getAllNews(null,null,null);
+        for(int i =0;i<100;i++){
+            UserDTO randUser = allUsers.toList().get(random.nextInt(0,allUsers.getNumberOfElements()));
+            NewsDTO randnews = allNews.toList().get(random.nextInt(0,allNews.getNumberOfElements()));
+            userService.readNews(randUser.getUserId(),randnews);
+        }
+
+
     }
 
 

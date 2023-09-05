@@ -4,6 +4,7 @@ import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Models.NewsDTO;
+import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
 import com.example.Easy.Repository.NewsRepository;
 import com.example.Easy.Repository.UserRepository;
@@ -39,6 +40,7 @@ public class NewsService {
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
     private final static String DEFAULT_SORT="creationTime";
+    private final static String DOWNLOAD_URL ="https://firebasestorage.googleapis.com/v0/b/easy-newss.appspot.com/o/%s?alt=media&";
 
 
     public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy) {
@@ -108,7 +110,6 @@ public class NewsService {
         newsRepository.deleteById(newsUUID);
     }
 
-    private final static String DOWNLOAD_URL ="https://firebasestorage.googleapis.com/v0/b/easy-newss.appspot.com/o/%s?alt=media&";
     public String uploadImage(MultipartFile file) throws IOException {
         String imageName = generateFileName(file.getOriginalFilename());
         BlobId blobId = BlobId.of("easy-newss.appspot.com", imageName);
@@ -127,6 +128,13 @@ public class NewsService {
     }
     private String getExtension(String originalFileName) {
         return StringUtils.getFilenameExtension(originalFileName);
+    }
+
+
+    private Page<NewsDTO> getRecommendedNews(UserDTO userDTO){
+
+
+        return null;
     }
 
 
