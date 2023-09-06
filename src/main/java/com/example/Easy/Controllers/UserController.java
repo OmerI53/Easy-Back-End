@@ -21,19 +21,19 @@ public class UserController {
         userService.AddNewUser(userDTO);
         return new ResponseEntity((HttpStatus.CREATED));
     }
-    @DeleteMapping("/{userID}")
+    @DeleteMapping("/delete/{userID}")
     public void deleteUserByID(@PathVariable("userID")UUID userID){
-        userService.getUserByID(userID);
+        userService.DeleteUser(userID);
     }
-    @PatchMapping("/{userID}")
+    @DeleteMapping("/delete/all")
     public void deleteAllUsers(@PathVariable("userID")UUID userID){
         userService.DeleteAllUsers();
     }
-    @GetMapping("/all")
+    @GetMapping("get/all")
     public List<UserDTO> getAllUsers(){
         return userService.getAllUsers();
     }
-    @GetMapping("/{userID}")
+    @GetMapping("get/{userID}")
     public UserDTO getUserByID(@PathVariable("userID") UUID uuid){
         return userService.getUserByID(uuid);
     }

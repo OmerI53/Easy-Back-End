@@ -6,16 +6,20 @@ import com.example.Easy.Models.CommentDTO;
 import com.example.Easy.Repositories.CommentRepository;
 import com.example.Easy.Repositories.NewsRepository;
 import com.example.Easy.Repositories.UserRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-    private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
-    private final UserRepository userRepository;
-    private final NewsRepository newsRepository;
+
+    private  CommentRepository commentRepository;
+    private  CommentMapper commentMapper;
+    private  UserRepository userRepository;
+    private  NewsRepository newsRepository;
+
 
     public void sendComment(CommentDTO commentDTO){
         CommentEntity commentEntity = CommentEntity.builder()
