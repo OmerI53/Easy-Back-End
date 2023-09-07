@@ -3,9 +3,11 @@ package com.example.Easy.Controllers;
 import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Models.RecordsDTO;
 import com.example.Easy.Models.UserDTO;
+import com.example.Easy.Services.AuthenticationService;
 import com.example.Easy.Services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -16,6 +18,11 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationService authenticationService;
+    @PostMapping("/auth/register")
+    public ResponseEntity register(@RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(authenticationService.register(userDTO));
+    }
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable("userId") UUID userId){
         userService.deleteUser(userId);
@@ -77,7 +84,4 @@ public class UserController {
                                                @RequestParam(required = false) String sortBy){
         return userService.getUserRecordsById(userId,pageNumber,pageSize,sortBy);
     }
-
-
-
 }

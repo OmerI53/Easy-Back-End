@@ -1,6 +1,7 @@
 package com.example.Easy.Controllers;
 
 import com.example.Easy.Models.DeviceDTO;
+import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Services.DeviceService;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,18 @@ public class DeviceController {
     public ResponseEntity patchDevice(@PathVariable("deviceId") UUID deviceId,@RequestBody DeviceDTO deviceDTO){
         deviceService.patchDevice(deviceId,deviceDTO);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/login/{deviceId}")
+    public ResponseEntity loginToDevice(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(deviceService.loginToDevice(deviceId,userDTO));
+    }
+    @GetMapping("/users/{deviceId}")
+    public Page<UserDTO> getDeviceUsers(@PathVariable("deviceId") UUID deviceId,
+                                        @RequestParam(required = false) Integer pageNumber,
+                                        @RequestParam(required = false) Integer pageSize,
+                                        @RequestParam(required = false) String sortBy){
+        return deviceService.getDeviceUsers(deviceId,pageNumber,pageSize,sortBy);
     }
 
 }

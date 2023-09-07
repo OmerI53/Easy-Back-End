@@ -33,5 +33,7 @@ public class RecordsEntity {
     @ManyToOne
     private NewsEntity news;
 
+    //number of time a user read the news
     private int repeatedRead;
+
 }

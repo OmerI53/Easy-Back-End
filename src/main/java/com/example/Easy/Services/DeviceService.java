@@ -1,23 +1,35 @@
 package com.example.Easy.Services;
 
 import com.example.Easy.Entities.DeviceEntity;
+import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Mappers.DeviceMapper;
+import com.example.Easy.Mappers.UserMapper;
 import com.example.Easy.Models.DeviceDTO;
+import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.DeviceRepository;
+import com.example.Easy.Repository.UserRepository;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class DeviceService {
     private final NotificationService notificationService;
+    private final AuthenticationService authenticationService;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final DeviceRepository deviceRepository;
     private final DeviceMapper deviceMapper;
     private final static int DEFAULT_PAGE=0;
@@ -78,5 +90,28 @@ public class DeviceService {
             deviceEntity.setDeviceType(deviceDTO.getDeviceType());
 
         deviceRepository.save(deviceEntity);
+    }
+
+    public String loginToDevice(UUID deviceId, UserDTO userDTO) {
+        String auth = authenticationService.authenticate(userDTO);
+        DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
+        UserEntity user = userRepository.findByEmail(userDTO.getEmail());
+        device.getUsers().add(user);
+        deviceRepository.save(device);
+        return auth;
+    }
+
+    public Page<UserDTO> getDeviceUsers(UUID deviceId, Integer pageNumber, Integer pageSize, String sortBy) {
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+        List<UserDTO> userDTOS = deviceRepository.findById(deviceId).orElse(null).getUsers()
+                .stream().map(userMapper::toUserDTO).collect(Collectors.toList());
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest,userDTOS).getPageList());
+    }
+    private PagedListHolder pagedListHolderFromRequest(PageRequest pageRequest, List list){
+        PagedListHolder pagedListHolder = new PagedListHolder<>(list);
+        pagedListHolder.setPageSize(pageRequest.getPageSize());
+        pagedListHolder.setPage(pageRequest.getPageNumber());
+        pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
+        return pagedListHolder;
     }
 }

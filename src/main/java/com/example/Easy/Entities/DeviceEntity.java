@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -42,5 +43,8 @@ public class DeviceEntity {
     @JdbcTypeCode(SqlTypes.CHAR)
     @Column(name = "deviceUser",columnDefinition = "varchar(36)")
     private UUID userId;
+
+    @OneToMany
+    private List<UserEntity> users;
 
 }

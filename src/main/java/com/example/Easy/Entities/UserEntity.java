@@ -37,15 +37,21 @@ public class UserEntity implements UserDetails {
     private String name;
 
     private String image;
-
+    //Firebase Messaging token of the user
     @NotNull
     @NotBlank
     private String userToken;
 
+    //device of the user
+    @ManyToOne
+    private DeviceEntity device;
+
+
+    //News written by this user
     @JsonIgnore
     @OneToMany(mappedBy = "author",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<NewsEntity> news;
-
+    //Comments written by this user
     @JsonIgnore
     @OneToMany(mappedBy = "author",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<CommentEntity> comments;
@@ -67,6 +73,7 @@ public class UserEntity implements UserDetails {
 
     private String password;
 
+    //Role of the user default it is 1 (cant post)
     private Integer role;
 
     @Override

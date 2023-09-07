@@ -6,6 +6,7 @@ import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
 import com.example.Easy.Repository.NewsRepository;
+import com.example.Easy.Repository.RecordsRepository;
 import com.example.Easy.Repository.UserRepository;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.BlobId;
@@ -36,6 +37,7 @@ public class NewsService {
     private final UserService userService;
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
+    private final RecordsRepository recordsRepository;
 
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
@@ -152,8 +154,5 @@ public class NewsService {
         pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
     return pagedListHolder;
     }
-
-
-
 
 }

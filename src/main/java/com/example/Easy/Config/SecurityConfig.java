@@ -27,7 +27,10 @@ public class SecurityConfig {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector);
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth->auth.requestMatchers(mvcMatcherBuilder.pattern("/api/auth/**")).permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(auth->auth
+                        .requestMatchers(mvcMatcherBuilder.pattern("/api/user/auth/register"),
+                                mvcMatcherBuilder.pattern("/api/device/login/**"))
+                        .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFiler, UsernamePasswordAuthenticationFilter.class);
