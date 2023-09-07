@@ -4,6 +4,7 @@ import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Entities.NotificationEntity;
 import com.example.Easy.Entities.RecordsEntity;
 import com.example.Easy.Entities.UserEntity;
+import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Mappers.RecordsMapper;
 import com.example.Easy.Mappers.UserMapper;
 import com.example.Easy.Models.NewsDTO;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +35,16 @@ public class UserService {
 
     private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String,String> kafkaTemplate;
+
     private final NewsRepository newsRepository;
+    private final NewsMapper newsMapper;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
     private final RecordsRepository recordsRepository;
     private final RecordsMapper recordsMapper;
+
     private final PasswordEncoder passwordEncoder;
 
 
@@ -76,12 +83,10 @@ public class UserService {
     public void deleteUser(UUID userId){
         userRepository.deleteById(userId);
     }
-
     public Page<UserDTO> listUsers(Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         return userRepository.findAll(pageRequest).map(userMapper::toUserDTO);
     }
-
     public UserDTO getUserById(UUID userId) {
         return userMapper.toUserDTO(userRepository.findById(userId).orElse(null));
     }
@@ -101,7 +106,6 @@ public class UserService {
             user.setRole(userDTO.getRole());
         userRepository.save(user);
     }
-
     public void followUserById(UUID userId, UserDTO userDTO) {
         UserEntity userFollowing = userRepository.findById(userDTO.getUserId()).orElse(null);
         UserEntity userFollowed = userRepository.findById(userId).orElse(null);
@@ -126,7 +130,6 @@ public class UserService {
         userRepository.save(userFollowing);
         userRepository.save(userFollowed);
     }
-
     public Page<UserDTO> getAllFollowers(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         UserEntity user = userRepository.findById(userId).orElse(null);
@@ -137,7 +140,6 @@ public class UserService {
         return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
 
     }
-
     public Page<UserDTO> getAllFollowing(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         UserEntity user = userRepository.findById(userId).orElse(null);
@@ -146,8 +148,6 @@ public class UserService {
                 .toList();
         return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
     }
-
-
     public void readNews(UUID userId, NewsDTO newsDTO) {
         UserEntity user = userRepository.findById(userId).orElse(null);
         NewsEntity news = newsRepository.findById(newsDTO.getNewsId()).orElse(null);
@@ -156,7 +156,6 @@ public class UserService {
             records.setRepeatedRead(records.getRepeatedRead()+1);
             recordsRepository.save(records);
         }else {
-            assert news != null;
             RecordsEntity rerecords = RecordsEntity.builder()
                     .user(user)
                     .news(news)
@@ -166,7 +165,6 @@ public class UserService {
             recordsRepository.save(rerecords);
         }
     }
-
     public Page<RecordsDTO> getUserRecordsById(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         //Default sortby is only for user
         if(sortBy==null || sortBy.equals(""))
@@ -175,15 +173,30 @@ public class UserService {
         UserEntity user = userRepository.findById(userId).orElse(null);
         return recordsRepository.findByUser(user,pageRequest).map(recordsMapper::toRecordsDTO);
     }
-
     public UserDTO findUserByEmail(String email) {
         return userMapper.toUserDTO(userRepository.findByEmail(email));
     }
-    private PagedListHolder<UserDTO> pagedListHolderFromRequest(PageRequest pageRequest,List<UserDTO> userDTOS){
-        PagedListHolder<UserDTO> pagedListHolder = new PagedListHolder<>(userDTOS);
+    private PagedListHolder pagedListHolderFromRequest(PageRequest pageRequest,List list){
+        PagedListHolder pagedListHolder = new PagedListHolder<>(list);
         pagedListHolder.setPageSize(pageRequest.getPageSize());
         pagedListHolder.setPage(pageRequest.getPageNumber());
         pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
         return pagedListHolder;
+    }
+    public Page<NewsDTO> getLikedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        List<NewsDTO> newsEntities = recordsRepository.findByUserAndPostlike(user,true)
+                .stream().map(x->newsMapper.toNewsDTO(x.getNews()))
+                .collect(Collectors.toList());
+        return new PageImpl<NewsDTO>(pagedListHolderFromRequest(pageRequest,newsEntities).getPageList());
+    }
+    public Page<NewsDTO> getBookmarkedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        List<NewsDTO> newsEntities = recordsRepository.findByUserAndPostbookmark(user,true)
+                .stream().map(x->newsMapper.toNewsDTO(x.getNews()))
+                .collect(Collectors.toList());
+        return new PageImpl<NewsDTO>(pagedListHolderFromRequest(pageRequest,newsEntities).getPageList());
     }
 }

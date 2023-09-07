@@ -37,7 +37,6 @@ public class UserController {
                                    @RequestParam(required = false) String sortBy){
         return userService.listUsers(pageNumber,pageSize, sortBy);
     }
-
     @GetMapping("/{userId}")
     public UserDTO getUserById(@PathVariable("userId") UUID userId){
         return userService.getUserById(userId);
@@ -56,7 +55,6 @@ public class UserController {
     public void unfollowUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
         userService.unfollowUserById(userId,userDTO);
     }
-
     @GetMapping("/followers/{userId}")
     public Page<UserDTO> getAllFollowersById(@PathVariable("userId") UUID userId,
                                              @RequestParam(required = false) Integer pageNumber,
@@ -71,17 +69,29 @@ public class UserController {
                                                         @RequestParam(required = false) String sortBy){
         return userService.getAllFollowing(userId, pageNumber, pageSize, sortBy);
     }
-
     @PostMapping("/records/{userId}")
     public void readNews(@PathVariable("userId") UUID userId ,@RequestBody NewsDTO newsDTO){
         userService.readNews(userId,newsDTO);
     }
-
     @GetMapping("/records/{userId}")
     public Page<RecordsDTO> getUserRecordsById(@PathVariable("userId") UUID userId,
                                                @RequestParam(required = false) Integer pageNumber,
                                                @RequestParam(required = false) Integer pageSize,
                                                @RequestParam(required = false) String sortBy){
         return userService.getUserRecordsById(userId,pageNumber,pageSize,sortBy);
+    }
+    @GetMapping("/likes/{userId}")
+    public Page<NewsDTO> getLikedNews(@PathVariable UUID userId,
+                                      @RequestParam(required = false) Integer pageNumber,
+                                      @RequestParam(required = false) Integer pageSize,
+                                      @RequestParam(required = false) String sortBy){
+        return userService.getLikedNews(userId,pageNumber,pageSize,sortBy);
+    }
+    @GetMapping("/bookmark/{userId}")
+    public Page<NewsDTO> getBookmarkedNews(@PathVariable UUID userId,
+                                      @RequestParam(required = false) Integer pageNumber,
+                                      @RequestParam(required = false) Integer pageSize,
+                                      @RequestParam(required = false) String sortBy){
+        return userService.getBookmarkedNews(userId,pageNumber,pageSize,sortBy);
     }
 }

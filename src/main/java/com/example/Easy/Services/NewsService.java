@@ -1,9 +1,11 @@
 package com.example.Easy.Services;
 
 import com.example.Easy.Entities.NewsEntity;
+import com.example.Easy.Entities.RecordsEntity;
 import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Models.NewsDTO;
+import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.NewsCategoryRepository;
 import com.example.Easy.Repository.NewsRepository;
 import com.example.Easy.Repository.RecordsRepository;
@@ -33,10 +35,13 @@ import java.util.*;
 @RequiredArgsConstructor
 public class NewsService {
     private final NewsCategoryRepository newsCategoryRepository;
+
     private final UserRepository userRepository;
     private final UserService userService;
+
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
+
     private final RecordsRepository recordsRepository;
 
     private final static int DEFAULT_PAGE=0;
@@ -128,6 +133,7 @@ public class NewsService {
 
         return new PageImpl<>(pagedListHolderFromRequest(pageRequest,newsDTOS).getPageList());
     }
+    //Upload image to firebase storage
     public String uploadImage(MultipartFile file) throws IOException {
         String imageName = generateFileName(file.getOriginalFilename());
         BlobId blobId = BlobId.of("easy-newss.appspot.com", imageName);
@@ -147,6 +153,7 @@ public class NewsService {
     private String getExtension(String originalFileName) {
         return StringUtils.getFilenameExtension(originalFileName);
     }
+    //Convert to Page
     private PagedListHolder<NewsDTO> pagedListHolderFromRequest(PageRequest pageRequest,List<NewsDTO> list){
         PagedListHolder<NewsDTO> pagedListHolder = new PagedListHolder<>(list);
         pagedListHolder.setPageSize(pageRequest.getPageSize());
@@ -154,5 +161,48 @@ public class NewsService {
         pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
     return pagedListHolder;
     }
+    //Like and Bookmark function
+    public String likePost(UUID newsId, UserDTO userDTO) {
+        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
+        records.setPostlike(true);
+        recordsRepository.save(records);
+        return "liked";
+    }
+    public String unlikePost(UUID newsId, UserDTO userDTO) {
+        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
+        records.setPostlike(false);
+        recordsRepository.save(records);
+        return "unliked";
+    }
+    public String bookmark(UUID newsId, UserDTO userDTO) {
+        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
+        records.setPostbookmark(true);
+        recordsRepository.save(records);
+        return "bookmarked";
+    }
+    public String removeBookmark(UUID newsId, UserDTO userDTO) {
+        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
+        records.setPostbookmark(false);
+        recordsRepository.save(records);
+        return "removed bookmark";
+    }
+    public int getLikes(UUID newsId, Integer pageNumber, Integer pageSize, String sortBy) {
+        //default value is for newsEntity, so we need to set it for RecordsEntity
+        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        return recordsRepository.findByNewsAndPostlike(news, true).size();
+    }
+    public int getBookmarks(UUID newsId, Integer pageNumber, Integer pageSize, String sortBy) {
+        //default value is for newsEntity, so we need to set it for RecordsEntity
 
+        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        return recordsRepository.findByNewsAndPostbookmark(news, true).size();
+    }
 }

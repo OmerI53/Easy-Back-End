@@ -1,6 +1,7 @@
 package com.example.Easy.Controllers;
 
 import com.example.Easy.Models.NewsDTO;
+import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Services.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -52,21 +53,49 @@ public class NewsController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{newsUUID}")
-    public ResponseEntity deletePostById(@PathVariable("newsUUID")UUID newsUUID){
+    @DeleteMapping("{newsId}")
+    public ResponseEntity deletePostById(@PathVariable("newsId")UUID newsUUID){
         newsService.deletePostById(newsUUID);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     @GetMapping("/recommendations/{userId}")
-    public Page<NewsDTO> getRecommendedNews(@PathVariable("userId") UUID userId,@RequestParam(required = false) Integer pageNumber,
+    public Page<NewsDTO> getRecommendedNews(@PathVariable("userId") UUID userId,
+                                            @RequestParam(required = false) Integer pageNumber,
                                             @RequestParam(required = false) Integer pageSize,
                                             @RequestParam(required = false) String sortBy){
         return newsService.getRecommendedNews(userId,pageNumber,pageSize,sortBy);
     }
 
-
-
-
+    @PostMapping("like/{newsId}")
+    public ResponseEntity likePost(@PathVariable("newsId") UUID newsId, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(newsService.likePost(newsId,userDTO));
+    }
+    @DeleteMapping("like/{newsId}")
+    public ResponseEntity unlikePost(@PathVariable("newsId") UUID newsId, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(newsService.unlikePost(newsId,userDTO));
+    }
+    @GetMapping("like/{newsId}")
+    public int getLikes(@PathVariable("newsId") UUID newsId,
+                        @RequestParam(required = false) Integer pageNumber,
+                        @RequestParam(required = false) Integer pageSize,
+                        @RequestParam(required = false) String sortBy){
+        return newsService.getLikes(newsId,pageNumber,pageSize,sortBy);
+    }
+    @PostMapping("bookmark/{newsId}")
+    public ResponseEntity bookmark(@PathVariable("newsId") UUID newsId, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(newsService.bookmark(newsId,userDTO));
+    }
+    @DeleteMapping("bookmark/{newsId}")
+    public ResponseEntity removeBookmark(@PathVariable("newsId") UUID newsId, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(newsService.removeBookmark(newsId,userDTO));
+    }
+    @GetMapping("bookmark/{newsId}")
+    public int getBookmarks(@PathVariable("newsId") UUID newsId,
+                            @RequestParam(required = false) Integer pageNumber,
+                            @RequestParam(required = false) Integer pageSize,
+                            @RequestParam(required = false) String sortBy){
+        return newsService.getBookmarks(newsId,pageNumber,pageSize,sortBy);
+    }
 
 
 
