@@ -1,6 +1,7 @@
 package com.example.Easy.Services;
 
 import com.example.Easy.Entities.UserEntity;
+import com.example.Easy.Models.AuthResponseDTO;
 import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-    public String register(UserDTO userDTO) {
+    public AuthResponseDTO register(UserDTO userDTO) {
         UserEntity userEntity = UserEntity.builder()
                 .name(userDTO.getName())
                 .userToken(userDTO.getUserToken())
@@ -26,10 +27,17 @@ public class AuthenticationService {
         userRepository.save(userEntity);
         //TODO cant since a real FCM token is needed
         //notificationService.subscribeToTopic("All",userDTO.getUserToken());
-        return jwtService.generateToken(userEntity);
+        String token = jwtService.generateToken(userEntity);
+        return AuthResponseDTO.builder()
+                .name(userEntity.getName())
+                .userId(userEntity.getUserId())
+                .image(userEntity.getImage())
+                .email(userEntity.getEmail())
+                .jwt(token)
+                .build();
     }
 
-    public String authenticate(UserDTO userDTO) {
+    public AuthResponseDTO authenticate(UserDTO userDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDTO.getEmail(),
@@ -37,6 +45,13 @@ public class AuthenticationService {
                 )
         );
         UserEntity user = userRepository.findByEmail(userDTO.getEmail());
-        return jwtService.generateToken(user);
+        String token = jwtService.generateToken(user);
+        return AuthResponseDTO.builder()
+                .name(user.getName())
+                .jwt(token)
+                .image(user.getImage())
+                .email(user.getEmail())
+                .userId(user.getUserId())
+                .build();
     }
 }

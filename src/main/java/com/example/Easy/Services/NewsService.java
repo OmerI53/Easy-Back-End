@@ -119,13 +119,17 @@ public class NewsService {
         Map<String,Integer> rep = new HashMap<>();
         userService.getUserRecordsById(userId,null,null,"repeatedRead")
                 .stream().forEach(x->{
-                    if(rep.containsKey(x.getNewsCategory().getName()))
-                       rep.put(x.getNewsCategory().getName(),rep.get(x.getNewsCategory().getName())+x.getRepeatedRead());
-                    else
-                        rep.put(x.getNewsCategory().getName(),x.getRepeatedRead());
+                    int val = x.getRepeatedRead();
+                    if(x.isPostlike())
+                        val+=1;
+                    if(x.isPostbookmark())
+                        val+=2;
+                    Integer oldval = rep.put(x.getNewsCategory().getName(),val);
+                    if(oldval!=null)
+                        rep.put(x.getNewsCategory().getName(),oldval+val);
                 });
         for(String category:rep.keySet()){
-            Integer count = (int) (rep.get(category)*0.18)+1;
+            Integer count = (int) (rep.get(category)*0.2)+1;
             List<NewsDTO> newsByCategory = getNewsByCategoryName(category,null,count,null).stream().toList();
             newsDTOS.addAll(newsByCategory);
         }

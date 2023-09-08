@@ -18,5 +18,9 @@ public class RecordsDTO {
     @JsonIgnoreProperties({"text","author","creationTime","image"})
     private NewsDTO news;
     private int repeatedRead;
+    @JsonIgnore
+    private boolean postlike;
+    @JsonIgnore
+    private boolean postbookmark;
 
 }

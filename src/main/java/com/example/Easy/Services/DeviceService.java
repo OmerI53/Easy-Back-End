@@ -4,6 +4,7 @@ import com.example.Easy.Entities.DeviceEntity;
 import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Mappers.DeviceMapper;
 import com.example.Easy.Mappers.UserMapper;
+import com.example.Easy.Models.AuthResponseDTO;
 import com.example.Easy.Models.DeviceDTO;
 import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.DeviceRepository;
@@ -92,12 +93,15 @@ public class DeviceService {
         deviceRepository.save(deviceEntity);
     }
 
-    public String loginToDevice(UUID deviceId, UserDTO userDTO) {
-        String auth = authenticationService.authenticate(userDTO);
+    public AuthResponseDTO loginToDevice(UUID deviceId, UserDTO userDTO) {
+        AuthResponseDTO auth = authenticationService.authenticate(userDTO);
         DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
         UserEntity user = userRepository.findByEmail(userDTO.getEmail());
-        device.getUsers().add(user);
-        deviceRepository.save(device);
+        if(user.getDevice()==null){
+            device.getUsers().add(user);
+            user.setDevice(device);
+            deviceRepository.save(device);
+        }
         return auth;
     }
 
