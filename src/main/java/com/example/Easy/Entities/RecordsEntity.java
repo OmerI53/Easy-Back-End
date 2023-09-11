@@ -35,4 +35,16 @@ public class RecordsEntity {
     private NewsEntity news;
 
     private int repeated_read;
+
+    //number of time a user read the news
+    @Column(columnDefinition = "int default 1")
+    private int repeatedRead;
+
+    //if post is liked true
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private boolean postlike;
+    //if post is bookmarked true
+    @Column(columnDefinition = "tinyint(1) default 0")
+    private boolean postbookmark;
+
 }

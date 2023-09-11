@@ -4,13 +4,13 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.UUID;
+
 @Data
 @Builder
-public class UserDTO {
+public class AuthResponseDTO {
     private UUID userId;
     private String name;
     private String image;
-    private Integer role;
     private String email;
-    private String password;
+    private String jwt;
 }

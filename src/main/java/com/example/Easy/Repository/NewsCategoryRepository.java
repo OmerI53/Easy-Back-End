@@ -1,8 +1,13 @@
-package com.example.Easy.Repositories;
+package com.example.Easy.Repository;
 
 import com.example.Easy.Entities.NewsCategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
+
 public interface NewsCategoryRepository extends JpaRepository<NewsCategoryEntity, Long> {
-    NewsCategoryEntity getByName(String name);
+
+    List<NewsCategoryEntity> findByparent(NewsCategoryEntity parent);
+    NewsCategoryEntity findByname(String name);
 }

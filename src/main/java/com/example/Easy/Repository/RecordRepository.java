@@ -1,4 +1,4 @@
-package com.example.Easy.Repositories;
+package com.example.Easy.Repository;
 
 import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Entities.RecordsEntity;
