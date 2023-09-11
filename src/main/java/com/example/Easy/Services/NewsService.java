@@ -95,8 +95,9 @@ public class NewsService {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         return newsRepository.findByTitle(title,pageRequest).map(newsMapper::toNewsDTO);
     }
-    public NewsDTO getNewsById(UUID newsId) {
-        return newsMapper.toNewsDTO(newsRepository.findById(newsId).orElse(null));
+    public Page<NewsDTO> getNewsById(UUID newsId, Integer pageNumber, Integer pageSize, String sortBy) {
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+        return newsRepository.findByNewsId(newsId,pageRequest).map(newsMapper::toNewsDTO);
     }
     public void postNews(NewsDTO newsDTO) {
         UserEntity author = userRepository.findById(newsDTO.getAuthor().getUserId()).orElse(null);

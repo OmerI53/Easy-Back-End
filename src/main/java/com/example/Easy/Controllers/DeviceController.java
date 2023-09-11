@@ -21,9 +21,9 @@ public class DeviceController {
 
 
     @PostMapping("/new")
-    public DeviceDTO addNewDevice(@RequestBody DeviceDTO deviceDTO) throws FirebaseMessagingException {
+    public ResponseEntity addNewDevice(@RequestBody DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
-        return deviceService.addNewDevice(deviceDTO);
+        return ResponseEntity.ok(deviceService.addNewDevice(deviceDTO));
     }
 
     @DeleteMapping("{deviceId}")

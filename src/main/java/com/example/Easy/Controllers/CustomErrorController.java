@@ -1,5 +1,8 @@
 package com.example.Easy.Controllers;
 
+import com.example.Easy.Repository.DeviceRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
@@ -14,7 +17,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@RequiredArgsConstructor
 public class CustomErrorController {
+    private final DeviceRepository deviceRepository;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity handleBindingErrors(MethodArgumentNotValidException exception){
@@ -41,5 +46,9 @@ public class CustomErrorController {
     ResponseEntity handleMissingPathVariableException(MissingPathVariableException e){
         return ResponseEntity.badRequest().body(e.getMessage());
     }
-
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ResponseEntity handleDataIntegrityViolationException(DataIntegrityViolationException e){
+        String[] err = e.getMessage().split("'");
+        return ResponseEntity.ok(deviceRepository.findByDeviceToken(err[1]).getDeviceID().toString());
+    }
 }

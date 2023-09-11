@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class DeviceService {
+
     private final NotificationService notificationService;
 
     private final AuthenticationService authenticationService;
@@ -69,11 +70,10 @@ public class DeviceService {
         return PageRequest.of(queryPageNumber,queryPageSize,sort);
 
     }
-    public DeviceDTO addNewDevice(DeviceDTO deviceDTO) throws FirebaseMessagingException {
+    public String addNewDevice(DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
         notificationService.subscribeToTopic("All",deviceDTO.getDeviceToken());
-        DeviceEntity device = deviceRepository.save(deviceMapper.toDeviceEntity(deviceDTO));
-        return deviceMapper.toDeviceDTO(device);
+        return deviceRepository.save(deviceMapper.toDeviceEntity(deviceDTO)).getDeviceID().toString();
     }
     public void removeDeviceById(UUID deviceId) {
         deviceRepository.deleteById(deviceId);
@@ -108,7 +108,7 @@ public class DeviceService {
             userRepository.save(user);
         }
         try {
-            notificationService.subscribeToTopic(userDTO.getUserId().toString(),device.getDeviceToken());
+            notificationService.subscribeToTopic(user.getUserId().toString(),device.getDeviceToken());
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
         }

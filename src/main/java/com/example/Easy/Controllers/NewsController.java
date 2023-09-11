@@ -43,6 +43,13 @@ public class NewsController {
                                         @RequestParam(required = false) String sortBy){
         return newsService.getNewsByTitle(title,pageNumber,pageSize,sortBy);
     }
+    @GetMapping("/{newsId}")
+    public Page<NewsDTO> getNewsById(@PathVariable("newsId") UUID title,
+                                        @RequestParam(required = false) Integer pageNumber,
+                                        @RequestParam(required = false) Integer pageSize,
+                                        @RequestParam(required = false) String sortBy){
+        return newsService.getNewsById(title,pageNumber,pageSize,sortBy);
+    }
     @PostMapping("/image")
     public String postImages(@RequestBody MultipartFile file) throws IOException {
         return newsService.uploadImage(file);

@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers(mvcMatcherBuilder.pattern("/api/user/auth/register"),
-                                mvcMatcherBuilder.pattern("/api/device/login/**"))
+                                mvcMatcherBuilder.pattern("/api/device/login/**"),
+                                mvcMatcherBuilder.pattern("/api/device/new"))
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)

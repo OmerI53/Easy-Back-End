@@ -102,9 +102,6 @@ class NewsServiceTest {
 
     @Test
     void getByNewsId() {
-        Page<NewsDTO> newsDTOList = newsService.getAllNews(1, 25, "creationTime");
-        NewsDTO newsDTO = newsService.getNewsById(newsDTOList.get().toList().get(0).getNewsId());
-        System.out.println(newsDTO);
     }
 
     @Test

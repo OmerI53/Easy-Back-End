@@ -11,6 +11,6 @@ import java.util.UUID;
 
 public interface NewsRepository extends JpaRepository<NewsEntity, UUID> {
     Page<NewsEntity> findByTitle(String title, Pageable pageable);
-    //Page<NewsEntity> findByNewsCategoryEntity(NewsCategoryEntity category);
+    Page<NewsEntity> findByNewsId(UUID newsId, Pageable pageable);
     List<NewsEntity> findByAuthor(UserEntity author);
 }
