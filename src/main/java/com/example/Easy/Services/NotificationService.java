@@ -41,7 +41,7 @@ public class NotificationService {
         return firebaseMessaging.send(message);
     }
     public String sendNotificationByTopic(NotificationDTO notificationDTO) throws FirebaseMessagingException {
-        if(notificationDTO.getUserToken()==null)
+        if(notificationDTO.getTopic()==null)
             throw new NullPointerException("Topic cannot be null");
         notificationRepository.save(notificationMapper.toNotificationEntity(notificationDTO));
         //build notification from notificationDTO
@@ -65,6 +65,12 @@ public class NotificationService {
         firebaseMessaging.subscribeToTopic(tokens,topic);
     }
 
+    public void unsubscribeToTopic(String topic, String token) throws FirebaseMessagingException {
+        firebaseMessaging.unsubscribeFromTopic(Arrays.asList(token),topic);
+    }
+    public void unsubscribeToTopic(String topic,List<String> tokens) throws FirebaseMessagingException {
+        firebaseMessaging.unsubscribeFromTopic(tokens,topic);
+    }
     public List<NotificationDTO> getMessageByTitle(String title) {
         return notificationRepository.getNotificationByTitle(title)
                 .stream().map(notificationMapper::toNotificationDTO)

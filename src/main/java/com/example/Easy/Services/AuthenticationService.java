@@ -20,8 +20,8 @@ public class AuthenticationService {
     public AuthResponseDTO register(UserDTO userDTO) {
         UserEntity userEntity = UserEntity.builder()
                 .name(userDTO.getName())
-                .userToken(userDTO.getUserToken())
                 .email(userDTO.getEmail())
+                .image(userDTO.getImage())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
         userRepository.save(userEntity);

@@ -10,7 +10,6 @@ public class UserDTO {
     private UUID userId;
     private String name;
     private String image;
-    private String userToken;
     private Integer role;
     private String email;
     private String password;

@@ -21,10 +21,9 @@ public class DeviceController {
 
 
     @PostMapping("/new")
-    public ResponseEntity addNewDevice(@RequestBody DeviceDTO deviceDTO) throws FirebaseMessagingException {
+    public DeviceDTO addNewDevice(@RequestBody DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
-        deviceService.addNewDevice(deviceDTO);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return deviceService.addNewDevice(deviceDTO);
     }
 
     @DeleteMapping("{deviceId}")
@@ -48,6 +47,12 @@ public class DeviceController {
     @PostMapping("/login/{deviceId}")
     public ResponseEntity loginToDevice(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(deviceService.loginToDevice(deviceId,userDTO));
+    }
+    @DeleteMapping("logout/{deviceId}")
+    public ResponseEntity logoutFromDevice(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
+        deviceService.logoutFromDevice(deviceId,userDTO);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+
     }
     @GetMapping("/users/{deviceId}")
     public Page<UserDTO> getDeviceUsers(@PathVariable("deviceId") UUID deviceId,

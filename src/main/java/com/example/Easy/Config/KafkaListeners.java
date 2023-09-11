@@ -25,11 +25,11 @@ public class KafkaListeners {
         UserDTO user = userService.getUserById(UUID.fromString(message[0]));
         NotificationDTO notification = NotificationDTO.builder()
                 .title("New Follower")
-                .userToken(user.getUserToken())
+                .topic(user.getUserId().toString())
                 .text(message[1]+" has followed you")
                 .build();
         try {
-            notificationService.sendNotificationByToken(notification);
+            notificationService.sendNotificationByTopic(notification);
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
         }

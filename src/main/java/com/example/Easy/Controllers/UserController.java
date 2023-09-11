@@ -1,5 +1,6 @@
 package com.example.Easy.Controllers;
 
+import com.example.Easy.Models.DeviceDTO;
 import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Models.RecordsDTO;
 import com.example.Easy.Models.UserDTO;
@@ -46,12 +47,12 @@ public class UserController {
     public UserDTO getUserByEmail(@PathVariable("email") String email){
         return userService.findUserByEmail(email);
     }
-    @PostMapping("/follow/{userId}")
+    @PostMapping("/follow/{userId}") //target of follow is {userId}, person following is userDTO
     public void followUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
         userService.followUserById(userId,userDTO);
 
     }
-    @DeleteMapping("/follow/{userId}")
+    @DeleteMapping("/follow/{userId}") //target of follow is {userId}, person following is userDTO
     public void unfollowUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
         userService.unfollowUserById(userId,userDTO);
     }
@@ -93,5 +94,12 @@ public class UserController {
                                       @RequestParam(required = false) Integer pageSize,
                                       @RequestParam(required = false) String sortBy){
         return userService.getBookmarkedNews(userId,pageNumber,pageSize,sortBy);
+    }
+    @GetMapping("/device/{userId}")
+    public Page<DeviceDTO> getDevices(@PathVariable UUID userId,
+                                      @RequestParam(required = false) Integer pageNumber,
+                                      @RequestParam(required = false) Integer pageSize,
+                                      @RequestParam(required = false) String sortBy){
+        return userService.getDevices(userId,pageNumber,pageSize,sortBy);
     }
 }

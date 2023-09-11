@@ -52,7 +52,6 @@ public class NewsController {
         newsService.postNews(newsDTO);
         return new ResponseEntity(HttpStatus.CREATED);
     }
-
     @DeleteMapping("{newsId}")
     public ResponseEntity deletePostById(@PathVariable("newsId")UUID newsUUID){
         newsService.deletePostById(newsUUID);
@@ -65,7 +64,13 @@ public class NewsController {
                                             @RequestParam(required = false) String sortBy){
         return newsService.getRecommendedNews(userId,pageNumber,pageSize,sortBy);
     }
-
+    @GetMapping("/following/{userId}")
+    public Page<NewsDTO> getFollowingNews(@PathVariable("userId") UUID userId,
+                                            @RequestParam(required = false) Integer pageNumber,
+                                            @RequestParam(required = false) Integer pageSize,
+                                            @RequestParam(required = false) String sortBy){
+        return newsService.getFollowingNews(userId,pageNumber,pageSize,sortBy);
+    }
     @PostMapping("like/{newsId}")
     public ResponseEntity likePost(@PathVariable("newsId") UUID newsId, @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(newsService.likePost(newsId,userDTO));

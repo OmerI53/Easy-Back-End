@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -208,5 +209,13 @@ public class NewsService {
 
         NewsEntity news = newsRepository.findById(newsId).orElse(null);
         return recordsRepository.findByNewsAndPostbookmark(news, true).size();
+    }
+    public Page<NewsDTO> getFollowingNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        List<NewsEntity> news = user.getFollowing()
+               .stream().flatMap(x->x.getNews().stream())
+               .collect(Collectors.toList());
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest,news.stream().map(newsMapper::toNewsDTO).collect(Collectors.toList())).getPageList());
     }
 }

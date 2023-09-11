@@ -44,7 +44,7 @@ public class DeviceEntity {
     @Column(name = "deviceUser",columnDefinition = "varchar(36)")
     private UUID userId;
 
-    @OneToMany
+    @ManyToMany
     private List<UserEntity> users;
 
 }

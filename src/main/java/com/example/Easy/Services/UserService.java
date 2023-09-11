@@ -4,9 +4,11 @@ import com.example.Easy.Entities.NewsEntity;
 import com.example.Easy.Entities.NotificationEntity;
 import com.example.Easy.Entities.RecordsEntity;
 import com.example.Easy.Entities.UserEntity;
+import com.example.Easy.Mappers.DeviceMapper;
 import com.example.Easy.Mappers.NewsMapper;
 import com.example.Easy.Mappers.RecordsMapper;
 import com.example.Easy.Mappers.UserMapper;
+import com.example.Easy.Models.DeviceDTO;
 import com.example.Easy.Models.NewsDTO;
 import com.example.Easy.Models.RecordsDTO;
 import com.example.Easy.Models.UserDTO;
@@ -44,6 +46,8 @@ public class UserService {
 
     private final RecordsRepository recordsRepository;
     private final RecordsMapper recordsMapper;
+
+    private final DeviceMapper deviceMapper;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -94,8 +98,6 @@ public class UserService {
         UserEntity user = userRepository.findById(userId).orElse(null);
         if(user==null)
                 return;
-        if(userDTO.getUserToken()!=null && !userDTO.getUserToken().equals(""))
-            user.setUserToken(userDTO.getUserToken());
         if(userDTO.getName()!=null && !userDTO.getName().equals(""))
             user.setName(userDTO.getName());
         if(userDTO.getImage()!=null && !userDTO.getName().equals(""))
@@ -198,5 +200,13 @@ public class UserService {
                 .stream().map(x->newsMapper.toNewsDTO(x.getNews()))
                 .collect(Collectors.toList());
         return new PageImpl<NewsDTO>(pagedListHolderFromRequest(pageRequest,newsEntities).getPageList());
+    }
+
+    public Page<DeviceDTO> getDevices(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
+        PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
+        UserEntity users = userRepository.findById(userId).orElse(null);
+        List<DeviceDTO> devices = users.getDevice()
+                .stream().map(deviceMapper::toDeviceDTO).toList();
+        return new PageImpl<DeviceDTO>(pagedListHolderFromRequest(pageRequest,devices).getPageList());
     }
 }

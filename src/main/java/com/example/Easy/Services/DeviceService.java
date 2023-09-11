@@ -28,11 +28,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DeviceService {
     private final NotificationService notificationService;
+
     private final AuthenticationService authenticationService;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
     private final DeviceRepository deviceRepository;
     private final DeviceMapper deviceMapper;
+
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
     private final static String DEFAULT_SORT="timeZone";
@@ -97,14 +101,32 @@ public class DeviceService {
         AuthResponseDTO auth = authenticationService.authenticate(userDTO);
         DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
         UserEntity user = userRepository.findByEmail(userDTO.getEmail());
-        if(user.getDevice()==null){
+        if(!device.getUsers().contains(user)){
             device.getUsers().add(user);
-            user.setDevice(device);
+            user.getDevice().add(device);
             deviceRepository.save(device);
+            userRepository.save(user);
+        }
+        try {
+            notificationService.subscribeToTopic(userDTO.getUserId().toString(),device.getDeviceToken());
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
         }
         return auth;
     }
-
+    public void logoutFromDevice(UUID deviceId, UserDTO userDTO) {
+        DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        user.getDevice().remove(device);
+        device.getUsers().remove(user);
+        try {
+            notificationService.unsubscribeToTopic(user.getUserId().toString(),device.getDeviceToken());
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
+        }
+        deviceRepository.save(device);
+        userRepository.save(user);
+    }
     public Page<UserDTO> getDeviceUsers(UUID deviceId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         List<UserDTO> userDTOS = deviceRepository.findById(deviceId).orElse(null).getUsers()
@@ -118,4 +140,6 @@ public class DeviceService {
         pagedListHolder.setSort(new MutableSortDefinition(pagedListHolder.getSort().toString(),true,true));
         return pagedListHolder;
     }
+
+
 }

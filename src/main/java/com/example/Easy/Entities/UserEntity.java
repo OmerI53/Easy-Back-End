@@ -38,13 +38,13 @@ public class UserEntity implements UserDetails {
 
     private String image;
     //Firebase Messaging token of the user
-    @NotNull
-    @NotBlank
-    private String userToken;
 
     //device of the user
-    @ManyToOne
-    private DeviceEntity device;
+    @ManyToMany
+    @JoinTable(name = "deice_users",
+    joinColumns = @JoinColumn(name = "deviceId"),
+    inverseJoinColumns = @JoinColumn(name = "userId"))
+    private List<DeviceEntity> device;
 
 
     //News written by this user
