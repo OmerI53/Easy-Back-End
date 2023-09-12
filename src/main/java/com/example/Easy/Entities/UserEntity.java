@@ -41,7 +41,7 @@ public class UserEntity implements UserDetails {
 
     //device of the user
     @ManyToMany
-    @JoinTable(name = "deice_users",
+    @JoinTable(name = "device_users",
             joinColumns = @JoinColumn(name = "deviceId"),
             inverseJoinColumns = @JoinColumn(name = "userId"))
     private List<DeviceEntity> device;

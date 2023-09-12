@@ -22,16 +22,13 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-serves}")
     private String bootstrapServers;
 
-    public Map<String,Object> consumerConfig(){
+    @Bean
+    public ConsumerFactory<String,String> consumerFactory (){
         HashMap<String,Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,StringSerializer.class);
-        return props;
-    }
-    @Bean
-    public ConsumerFactory<String,String> consumerFactory (){
-        return new DefaultKafkaConsumerFactory<>(consumerConfig());
+        return new DefaultKafkaConsumerFactory<>(props);
     }
 
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String,String>> factory(

@@ -18,42 +18,47 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
     public AuthResponseDTO register(UserDTO userDTO) {
-        UserEntity userEntity = UserEntity.builder()
+        UserEntity userEntity = createUserEntityFromDTO(userDTO);
+        userRepository.save(userEntity);
+
+        String token = jwtService.generateToken(userEntity);
+        return createAuthResponseDTO(userEntity, token);
+    }
+
+    public AuthResponseDTO authenticate(UserDTO userDTO) {
+        authenticateUser(userDTO.getEmail(), userDTO.getPassword());
+
+        UserEntity user = userRepository.findByEmail(userDTO.getEmail());
+        String token = jwtService.generateToken(user);
+
+        return createAuthResponseDTO(user, token);
+    }
+
+    private UserEntity createUserEntityFromDTO(UserDTO userDTO) {
+        return UserEntity.builder()
                 .name(userDTO.getName())
                 .email(userDTO.getEmail())
                 .image(userDTO.getImage())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
-        userRepository.save(userEntity);
-        //TODO cant since a real FCM token is needed
-        //notificationService.subscribeToTopic("All",userDTO.getUserToken());
-        String token = jwtService.generateToken(userEntity);
-        return AuthResponseDTO.builder()
-                .name(userEntity.getName())
-                .userId(userEntity.getUserId())
-                .image(userEntity.getImage())
-                .email(userEntity.getEmail())
-                .jwt(token)
-                .build();
     }
 
-    public AuthResponseDTO authenticate(UserDTO userDTO) {
+    private void authenticateUser(String email, String password) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        userDTO.getEmail(),
-                        userDTO.getPassword()
-                )
+                new UsernamePasswordAuthenticationToken(email, password)
         );
-        UserEntity user = userRepository.findByEmail(userDTO.getEmail());
-        String token = jwtService.generateToken(user);
+    }
+
+    private AuthResponseDTO createAuthResponseDTO(UserEntity user, String token) {
         return AuthResponseDTO.builder()
                 .name(user.getName())
-                .jwt(token)
+                .userId(user.getUserId())
                 .image(user.getImage())
                 .email(user.getEmail())
-                .userId(user.getUserId())
+                .jwt(token)
                 .build();
     }
-
 }
+

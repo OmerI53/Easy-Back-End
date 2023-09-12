@@ -20,7 +20,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByEmail(username);
+        return userRepository::findByEmail;
 
     }
     @Bean
@@ -32,12 +32,13 @@ public class ApplicationConfig {
         return configuration.getAuthenticationManager();
     }
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+    public AuthenticationProvider authenticationProvider() {
+        return new DaoAuthenticationProvider() {{
+            setUserDetailsService(userDetailsService());
+            setPasswordEncoder(passwordEncoder());
+        }};
     }
+
 
 
 

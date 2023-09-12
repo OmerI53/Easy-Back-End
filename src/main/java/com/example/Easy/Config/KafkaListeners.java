@@ -13,22 +13,26 @@ import java.util.UUID;
 
 @Component
 public class KafkaListeners {
+    private final UserService userService;
+    private final NotificationService notificationService;
+
     @Autowired
-    UserService userService;
-    @Autowired
-    NotificationService notificationService;
-    @KafkaListener(topics = "Follow",
-            groupId = "groupId")
+    public KafkaListeners(UserService userService, NotificationService notificationService) {
+        this.userService = userService;
+        this.notificationService = notificationService;
+    }
+
+    @KafkaListener(topics = "Follow", groupId = "groupId")
     private void listener(String data){
         //On recieve it will send notification
         String[] message = data.split(":");
-        UserDTO user = userService.getUserById(UUID.fromString(message[0]));
-        NotificationDTO notification = NotificationDTO.builder()
-                .title("New Follower")
-                .topic(user.getUserId().toString())
-                .text(message[1]+" has followed you")
-                .build();
         try {
+            UserDTO user = userService.getUserById(UUID.fromString(message[0]));
+            NotificationDTO notification = NotificationDTO.builder()
+                    .title("New Follower")
+                    .topic(user.getUserId().toString())
+                    .text(message[1]+" has followed you")
+                    .build();
             notificationService.sendNotificationByTopic(notification);
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
