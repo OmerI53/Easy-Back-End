@@ -61,5 +61,9 @@ public class DeviceController {
                                         @RequestParam(required = false) String sortBy){
         return deviceService.getDeviceUsers(deviceId,pageNumber,pageSize,sortBy);
     }
+    @GetMapping("/users/switch/{userId}")
+    public ResponseEntity switchAccounts(@PathVariable("userId") UUID userId,@RequestBody DeviceDTO deviceDTO){
+        return ResponseEntity.ok(deviceService.switchAccount(userId,deviceDTO));
+    }
 
 }

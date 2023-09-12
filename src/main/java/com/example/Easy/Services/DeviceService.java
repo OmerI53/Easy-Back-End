@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class DeviceService {
 
     private final DeviceRepository deviceRepository;
     private final DeviceMapper deviceMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     private final static int DEFAULT_PAGE=0;
     private final static int DEFAULT_PAGE_SIZE=25;
@@ -144,4 +147,11 @@ public class DeviceService {
     }
 
 
+    public String switchAccount(UUID userId,DeviceDTO deviceDTO) {
+        DeviceEntity device = deviceRepository.findById(deviceDTO.getDeviceID()).orElse(null);
+        UserEntity user = userRepository.findById(userId).orElse(null);
+        if(user!=null && device.getUsers().contains(user))
+            return authenticationService.generateJTW(user);
+        return "";
+    }
 }

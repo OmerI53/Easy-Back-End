@@ -43,6 +43,10 @@ public class AuthenticationService {
                 .build();
     }
 
+    public String generateJTW(UserEntity user){
+        return jwtService.generateToken(user);
+    }
+
     public AuthResponseDTO authenticate(UserDTO userDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
