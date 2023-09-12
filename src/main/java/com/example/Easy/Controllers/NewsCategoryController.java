@@ -16,16 +16,15 @@ import java.util.Map;
 public class NewsCategoryController {
 
     private final NewsCategoryService newsCategoryService;
+
     @GetMapping("/hierarchy")
-    public Map<String, List> getCategories(){
+    public Map<String,List> getCategories(){
         return newsCategoryService.getCategoriesHierarchy();
     }
-
     @GetMapping
     public List<NewsCategoryDTO> getAllCategories(){
         return newsCategoryService.getAllCategories();
     }
-
     @GetMapping("/{categoryId}")
     public NewsCategoryDTO getCategoryById(@PathVariable("categoryId") Long categoryId){
         return  newsCategoryService.getNewsCategoryById(categoryId);

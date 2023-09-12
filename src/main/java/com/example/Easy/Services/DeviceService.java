@@ -43,7 +43,6 @@ public class DeviceService {
     private final static String DEFAULT_SORT="timeZone";
     public PageRequest buildPageRequest(Integer pageNumber, Integer pageSize, String sortBy){
         // if not initilized set it to default
-
         int queryPageNumber;
         int queryPageSize;
         String querySortBy;
@@ -68,7 +67,6 @@ public class DeviceService {
 
         Sort sort = Sort.by(Sort.Order.desc(querySortBy));
         return PageRequest.of(queryPageNumber,queryPageSize,sort);
-
     }
     public String addNewDevice(DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
@@ -96,7 +94,6 @@ public class DeviceService {
 
         deviceRepository.save(deviceEntity);
     }
-
     public AuthResponseDTO loginToDevice(UUID deviceId, UserDTO userDTO) {
         AuthResponseDTO auth = authenticationService.authenticate(userDTO);
         DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);

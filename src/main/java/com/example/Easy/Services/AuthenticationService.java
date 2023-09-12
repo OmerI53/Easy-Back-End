@@ -5,6 +5,7 @@ import com.example.Easy.Models.AuthResponseDTO;
 import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,12 @@ public class AuthenticationService {
                 .image(userDTO.getImage())
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .build();
-        userRepository.save(userEntity);
+        try{
+            userRepository.save(userEntity);
+        }catch (DataIntegrityViolationException e) {
+            throw new NullPointerException("duplicate email");
+        }
+
         //TODO cant since a real FCM token is needed
         //notificationService.subscribeToTopic("All",userDTO.getUserToken());
         String token = jwtService.generateToken(userEntity);

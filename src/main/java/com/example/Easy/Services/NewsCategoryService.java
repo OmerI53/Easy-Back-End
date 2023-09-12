@@ -22,11 +22,11 @@ public class NewsCategoryService {
     public void addNewCategory(NewsCategoryDTO categoryDTO) {
         NewsCategoryEntity parent = newsCategoryRepository.findByname(categoryDTO.getParent().getName());
         if(parent==null){
-         newsCategoryRepository.save(newsCategoryMapper.toNewsCategoryEntity(categoryDTO.getParent()));
+         parent = newsCategoryRepository.save(newsCategoryMapper.toNewsCategoryEntity(categoryDTO.getParent()));
         }
         NewsCategoryEntity newsCategoryEntity = NewsCategoryEntity.builder()
                 .name(categoryDTO.getName())
-                .parent(newsCategoryMapper.toNewsCategoryEntity(categoryDTO.getParent()))
+                .parent(parent)
                 .build();
         newsCategoryRepository.save(newsCategoryEntity);
     }
