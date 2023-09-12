@@ -13,6 +13,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -71,7 +72,11 @@ public class DeviceService {
     public String addNewDevice(DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
         notificationService.subscribeToTopic("All",deviceDTO.getDeviceToken());
-        return deviceRepository.save(deviceMapper.toDeviceEntity(deviceDTO)).getDeviceID().toString();
+        try{
+            return deviceRepository.save(deviceMapper.toDeviceEntity(deviceDTO)).getDeviceID().toString();
+        }catch (DataIntegrityViolationException e) {
+            throw new NullPointerException("duplicate deviceId");
+        }
     }
     public void removeDeviceById(UUID deviceId) {
         deviceRepository.deleteById(deviceId);
