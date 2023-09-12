@@ -12,18 +12,18 @@ import org.hibernate.type.SqlTypes;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "News")
+@Builder
+@Getter
+@Setter
+@Table(name = "comments")
 public class CommentEntity {
     @Id
     @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name = "newsId", length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
-    private UUID commentID;
+    @Column(name = "commentId", length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    private UUID commentId;
 
     @NotNull
     @NotBlank
@@ -33,7 +33,7 @@ public class CommentEntity {
     private UserEntity author;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="name")
+    @JoinColumn(name = "name")
     @JsonIgnore
     private NewsEntity news;
 

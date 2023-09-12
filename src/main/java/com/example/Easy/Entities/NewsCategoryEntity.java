@@ -10,15 +10,16 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "News Categories")
 public class NewsCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long category_id;
+    private Long categoryId;
 
+    @Column(unique = true)
     private String name;
 
     @JsonIgnore
@@ -26,16 +27,14 @@ public class NewsCategoryEntity {
     private NewsCategoryEntity parent;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parent",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<NewsCategoryEntity> children;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "category",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<NewsEntity> news;
 
-    @OneToMany(mappedBy = "newsCategory", fetch = FetchType.LAZY,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "newsCategory",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<RecordsEntity> categoryRecord;
-
-
 
 }

@@ -4,6 +4,7 @@ import com.example.Easy.Entities.UserEntity;
 import com.example.Easy.Models.AuthResponseDTO;
 import com.example.Easy.Models.UserDTO;
 import com.example.Easy.Repository.UserRepository;
+import com.google.api.Authentication;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,4 +55,5 @@ public class AuthenticationService {
                 .userId(user.getUserId())
                 .build();
     }
+
 }

@@ -34,8 +34,6 @@ public class RecordsEntity {
     @ManyToOne
     private NewsEntity news;
 
-    private int repeated_read;
-
     //number of time a user read the news
     @Column(columnDefinition = "int default 1")
     private int repeatedRead;

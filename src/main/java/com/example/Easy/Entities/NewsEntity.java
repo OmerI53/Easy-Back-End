@@ -3,9 +3,7 @@ package com.example.Easy.Entities;
 import com.google.firebase.database.annotations.NotNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
@@ -15,6 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
 @Setter
@@ -23,8 +23,8 @@ public class NewsEntity {
     @Id
     @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(name ="newsId", length = 36, columnDefinition = "varchar(36)",updatable = false,nullable = false)
-    private UUID newsUUID;
+    @Column(name = "newsId", length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
+    private UUID newsId;
 
     @NotNull
     @NotBlank
@@ -36,8 +36,6 @@ public class NewsEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String text;
 
-    @NotNull
-    @NotBlank
     private String image;
 
     @NotNull
@@ -45,15 +43,19 @@ public class NewsEntity {
     private LocalDateTime creationTime;
 
     @NotNull
-    @ManyToOne@JoinColumn(name = "Author")
+    @ManyToOne
+    @JoinColumn(name = "Author")
     private UserEntity author;
+
 
     @ManyToOne
     private NewsCategoryEntity category;
 
-    @OneToMany(mappedBy = "news", fetch = FetchType.LAZY, cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "news",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<CommentEntity> comments;
 
-    @OneToMany(mappedBy = "news", fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "news",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<RecordsEntity> newsRecord;
+
+
 }
