@@ -27,6 +27,7 @@ public class DeviceEntity {
     @Column(name = "deviceId",length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID deviceID;
 
+
     @NotNull
     @NotBlank
     private String timeZone;

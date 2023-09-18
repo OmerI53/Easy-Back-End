@@ -8,3 +8,4 @@ import java.util.UUID;
 public interface DeviceRepository extends JpaRepository<DeviceEntity, UUID> {
 
 }
+

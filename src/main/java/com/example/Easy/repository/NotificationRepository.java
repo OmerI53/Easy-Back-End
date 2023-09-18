@@ -10,3 +10,4 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 
     List<NotificationEntity> getNotificationByTitle(String title);
 }
+

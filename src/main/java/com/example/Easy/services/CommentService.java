@@ -20,6 +20,7 @@ public class CommentService {
     private final NewsRepository newsRepository;
 
 
+
     public void postComment(CommentDTO commentDTO) {
         Optional<NewsEntity> newsEntityOptional = newsRepository.findById(commentDTO.getNewsId());
         Optional<UserEntity> authorEntityOptional = userRepository.findById(commentDTO.getAuthor().getUserId());

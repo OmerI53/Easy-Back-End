@@ -22,6 +22,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
 
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspect) throws Exception {
         MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspect);

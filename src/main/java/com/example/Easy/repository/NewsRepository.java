@@ -13,3 +13,4 @@ public interface NewsRepository extends JpaRepository<NewsEntity, UUID> {
     Page<NewsEntity> findByTitle(String title, Pageable pageable);
     List<NewsEntity> findByAuthor(UserEntity author);
 }
+

@@ -21,6 +21,7 @@ public class NewsCategoryController {
         return newsCategoryService.getCategoriesHierarchy();
     }
 
+
     @GetMapping("/all-hierarchy")
     public List<NewsCategoryDTO> getAllCategories(){
         return newsCategoryService.getAllCategories();

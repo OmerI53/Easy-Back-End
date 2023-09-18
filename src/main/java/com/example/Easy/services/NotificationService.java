@@ -21,6 +21,7 @@ public class NotificationService {
 
     private  final NotificationRepository notificationRepository;
     private  final NotificationMapper notificationMapper;
+
     private final FirebaseMessaging firebaseMessaging;
 
     public void sendNotificationByToken(NotificationDTO notificationDTO) throws FirebaseMessagingException {

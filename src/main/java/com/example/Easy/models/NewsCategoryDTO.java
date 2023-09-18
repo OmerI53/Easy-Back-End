@@ -11,3 +11,4 @@ public class NewsCategoryDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private NewsCategoryDTO parent;
 }
+

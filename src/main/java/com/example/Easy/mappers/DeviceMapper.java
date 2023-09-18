@@ -9,3 +9,4 @@ public interface DeviceMapper {
     DeviceEntity toDeviceEntity(DeviceDTO deviceDTO);
     DeviceDTO toDeviceDTO(DeviceEntity deviceEntity);
 }
+

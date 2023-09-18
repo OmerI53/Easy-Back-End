@@ -22,6 +22,7 @@ public class NewsCategoryEntity {
     @Column(unique = true)
     private String name;
 
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private NewsCategoryEntity parent;

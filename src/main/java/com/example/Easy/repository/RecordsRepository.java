@@ -18,3 +18,4 @@ public interface RecordsRepository extends JpaRepository<RecordsEntity, UUID> {
     List<RecordsEntity> findByUserAndPostlike(UserEntity user, boolean postlike);
     List<RecordsEntity> findByUserAndPostbookmark(UserEntity user,boolean postbookmark);
 }
+

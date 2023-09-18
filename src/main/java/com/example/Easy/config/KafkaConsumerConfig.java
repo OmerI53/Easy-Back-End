@@ -18,6 +18,8 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-serves}")
     private String bootstrapServers;
 
+
+
     @Bean
     public ConsumerFactory<String,String> consumerFactory (){
         HashMap<String,Object> props = new HashMap<>();

@@ -95,6 +95,7 @@ public class NewsController {
         return newsService.getLikes(newsId, pageNumber, pageSize, sortBy);
     }
 
+
     @PostMapping("/bookmark/{newsId}")
     public ResponseEntity<?> bookmark(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(newsService.bookmark(newsId, userDTO));

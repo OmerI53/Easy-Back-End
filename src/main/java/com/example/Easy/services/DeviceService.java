@@ -48,6 +48,7 @@ public class DeviceService {
         Sort sort = Sort.by(Sort.Order.desc(sortBy));
         return PageRequest.of(pageNumber, pageSize, sort);
     }
+
     public DeviceDTO addNewDevice(DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
         notificationService.subscribeToTopic("All",deviceDTO.getDeviceToken());

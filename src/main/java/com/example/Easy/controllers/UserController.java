@@ -56,6 +56,7 @@ public class UserController {
     public void unfollowUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
         userService.unfollowUserById(userId,userDTO);
     }
+
     @GetMapping("/followers/{userId}")
     public Page<UserDTO> getAllFollowersById(@PathVariable("userId") UUID userId,
                                              @RequestParam(required = false) Integer pageNumber,

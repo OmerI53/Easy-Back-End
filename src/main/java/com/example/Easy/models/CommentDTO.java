@@ -16,3 +16,4 @@ public class CommentDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private UUID newsId;
 }
+

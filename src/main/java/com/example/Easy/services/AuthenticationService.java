@@ -18,6 +18,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+
     public AuthResponseDTO register(UserDTO userDTO) {
         UserEntity userEntity = createUserEntityFromDTO(userDTO);
         userRepository.save(userEntity);

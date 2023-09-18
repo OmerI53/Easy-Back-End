@@ -9,3 +9,4 @@ public interface RecordsMapper {
     RecordsEntity toRecordsEntity(RecordsDTO recordsDTO);
     RecordsDTO toRecordsDTO(RecordsEntity recordsEntity);
 }
+

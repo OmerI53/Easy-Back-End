@@ -43,6 +43,7 @@ public class DeviceController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
     @PostMapping("/login/{deviceId}")
     public ResponseEntity<?> loginToDevice(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(deviceService.loginToDevice(deviceId,userDTO));

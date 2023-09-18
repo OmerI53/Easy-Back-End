@@ -13,3 +13,4 @@ public class DeviceDTO {
     private DeviceType deviceType;
     private String deviceToken;
 }
+

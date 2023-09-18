@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 public class NewsService {
     private final NewsCategoryRepository newsCategoryRepository;
 
+
     private final UserRepository userRepository;
     private final UserService userService;
 

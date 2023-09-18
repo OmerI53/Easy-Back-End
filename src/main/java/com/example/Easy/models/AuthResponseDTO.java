@@ -14,3 +14,4 @@ public class AuthResponseDTO {
     private String email;
     private String jwt;
 }
+

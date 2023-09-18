@@ -11,3 +11,4 @@ public interface NewsCategoryRepository extends JpaRepository<NewsCategoryEntity
     List<NewsCategoryEntity> findByparent(NewsCategoryEntity parent);
     NewsCategoryEntity findByname(String name);
 }
+

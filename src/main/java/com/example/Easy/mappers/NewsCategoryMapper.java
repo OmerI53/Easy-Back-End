@@ -9,3 +9,4 @@ public interface NewsCategoryMapper {
     NewsCategoryEntity toNewsCategoryEntity(NewsCategoryDTO newsCategoryDTO);
     NewsCategoryDTO toNewsCategoryDTO(NewsCategoryEntity newsEntity);
 }
+

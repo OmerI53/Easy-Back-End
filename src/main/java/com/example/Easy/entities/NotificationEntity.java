@@ -41,3 +41,4 @@ public class NotificationEntity {
     @NotBlank
     private String text;
 }
+

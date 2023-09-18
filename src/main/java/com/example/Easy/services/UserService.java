@@ -37,6 +37,7 @@ public class UserService {
     private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String,String> kafkaTemplate;
 
+
     private final NewsRepository newsRepository;
     private final NewsMapper newsMapper;
 

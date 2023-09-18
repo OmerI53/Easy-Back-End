@@ -46,3 +46,4 @@ public class RecordsEntity {
     private boolean postbookmark;
 
 }
+

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class NewsCategoryService {
+
     private final NewsCategoryRepository newsCategoryRepository;
     private final NewsCategoryMapper newsCategoryMapper;
 

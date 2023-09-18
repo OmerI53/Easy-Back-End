@@ -15,3 +15,4 @@ public class NotificationDTO {
     private String image;
     private String text;
 }
+

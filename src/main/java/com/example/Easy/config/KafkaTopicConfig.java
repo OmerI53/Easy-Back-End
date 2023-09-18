@@ -12,3 +12,4 @@ public class KafkaTopicConfig {
         return TopicBuilder.name("Follow").build();
     }
 }
+

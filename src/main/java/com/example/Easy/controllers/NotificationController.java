@@ -21,6 +21,7 @@ public class NotificationController {
     public void postNotificationByToken(@RequestBody NotificationDTO notificationDTO) throws FirebaseMessagingException {
         notificationService.sendNotificationByToken(notificationDTO);
     }
+
     @PostMapping("/topic")
     public ResponseEntity<?> postNotificationByTopic(@RequestBody NotificationDTO notificationDTO) throws FirebaseMessagingException {
         notificationService.sendNotificationByTopic(notificationDTO);

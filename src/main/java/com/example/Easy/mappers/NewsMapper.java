@@ -9,3 +9,4 @@ public interface NewsMapper {
     NewsDTO toNewsDTO(NewsEntity newsEntity);
     NewsEntity toNewsEntity(NewsDTO newsDTO);
 }
+

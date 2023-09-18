@@ -9,3 +9,4 @@ public interface UserMapper {
     UserEntity toUserEntity(UserDTO userDTO);
     UserDTO toUserDTO(UserEntity userEntity);
 }
+

@@ -25,6 +25,7 @@ public class CommentEntity {
     @Column(name = "commentId", length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false)
     private UUID commentId;
 
+
     @NotNull
     @NotBlank
     private String text;

@@ -24,3 +24,4 @@ public class RecordsDTO {
     private boolean postbookmark;
 
 }
+

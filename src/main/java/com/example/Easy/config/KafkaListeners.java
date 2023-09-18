@@ -16,6 +16,7 @@ public class KafkaListeners {
     private final UserService userService;
     private final NotificationService notificationService;
 
+
     @Autowired
     public KafkaListeners(UserService userService, NotificationService notificationService) {
         this.userService = userService;
