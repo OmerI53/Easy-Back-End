@@ -1,5 +1,6 @@
 package com.example.Easy.controllers;
 
+import com.example.Easy.models.AuthResponseDTO;
 import com.example.Easy.models.DeviceDTO;
 import com.example.Easy.models.UserDTO;
 import com.example.Easy.services.DeviceService;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @RestController
 @RequestMapping("api/devices")
 @RequiredArgsConstructor
@@ -19,47 +22,47 @@ public class DeviceController {
 
     private final DeviceService deviceService;
 
-    @PostMapping("/new")
-    public DeviceDTO addNewDevice(@RequestBody DeviceDTO deviceDTO) throws FirebaseMessagingException {
+    @PostMapping("/add")
+    public DeviceDTO add(@RequestBody DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
-        return deviceService.addNewDevice(deviceDTO);
+        return deviceService.add(deviceDTO);
     }
 
-    @DeleteMapping("/delete/{deviceId}")
-    public ResponseEntity<?> removeDeviceById(@PathVariable("deviceId")UUID deviceId){
-        deviceService.removeDeviceById(deviceId);
+    @DeleteMapping("/{deviceId}")
+    public ResponseEntity<Void> remove(@PathVariable("deviceId")UUID deviceId){
+        deviceService.delete(deviceId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @GetMapping
-    public Page<DeviceDTO> listAllDevices(@RequestParam(required = false) Integer pageNumber,
-                                          @RequestParam(required = false) Integer pageSize,
-                                          @RequestParam(required = false) String sortBy){
+    @GetMapping("/get-all")
+    public Page<DeviceDTO> get(@RequestParam(required = false) Integer pageNumber,
+                               @RequestParam(required = false) Integer pageSize,
+                               @RequestParam(required = false) String sortBy){
         return deviceService.listAllDevices(pageNumber, pageSize, sortBy);
     }
 
     @PatchMapping("/update/{deviceId}")
-    public ResponseEntity<?> patchDevice(@PathVariable("deviceId") UUID deviceId,@RequestBody DeviceDTO deviceDTO){
-        deviceService.patchDevice(deviceId,deviceDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> patch(@PathVariable("deviceId") UUID deviceId, @RequestBody DeviceDTO deviceDTO){
+        deviceService.patch(deviceId,deviceDTO);
+        return new ResponseEntity<>(OK);
     }
 
 
     @PostMapping("/login/{deviceId}")
-    public ResponseEntity<?> loginToDevice(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok(deviceService.loginToDevice(deviceId,userDTO));
+    public ResponseEntity<AuthResponseDTO> login(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok(deviceService.login(deviceId,userDTO));
     }
     @DeleteMapping("/logout/{deviceId}")
-    public ResponseEntity<?> logoutFromDevice(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
-        deviceService.logoutFromDevice(deviceId,userDTO);
+    public ResponseEntity<Void> logout(@PathVariable("deviceId") UUID deviceId, @RequestBody UserDTO userDTO){
+        deviceService.logout(deviceId,userDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
-    @GetMapping("/users/{deviceId}")
+    @GetMapping("/{deviceId}")
     public Page<UserDTO> getDeviceUsers(@PathVariable("deviceId") UUID deviceId,
                                         @RequestParam(required = false) Integer pageNumber,
                                         @RequestParam(required = false) Integer pageSize,
                                         @RequestParam(required = false) String sortBy){
-        return deviceService.getDeviceUsers(deviceId,pageNumber,pageSize,sortBy);
+        return deviceService.get(deviceId,pageNumber,pageSize,sortBy);
     }
 
 }

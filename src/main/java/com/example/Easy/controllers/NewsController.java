@@ -24,7 +24,7 @@ public class NewsController {
     public Page<NewsDTO> getAllNews(@RequestParam(required = false) Integer pageNumber,
                                     @RequestParam(required = false) Integer pageSize,
                                     @RequestParam(required = false) String sortBy){
-        return newsService.getAllNews(pageNumber, pageSize, sortBy);
+        return newsService.get(pageNumber, pageSize, sortBy);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -32,7 +32,7 @@ public class NewsController {
                                            @RequestParam(required = false) Integer pageNumber,
                                            @RequestParam(required = false) Integer pageSize,
                                            @RequestParam(required = false) String sortBy){
-        return newsService.getNewsByCategoryName(category,pageNumber,pageSize,sortBy);
+        return newsService.get(category,pageNumber,pageSize,sortBy);
     }
 
     @GetMapping("/title/{title}")
@@ -40,7 +40,7 @@ public class NewsController {
                                         @RequestParam(required = false) Integer pageNumber,
                                         @RequestParam(required = false) Integer pageSize,
                                         @RequestParam(required = false) String sortBy){
-        return newsService.getNewsByTitle(title,pageNumber,pageSize,sortBy);
+        return newsService.getByTitle(title,pageNumber,pageSize,sortBy);
     }
 
     @PostMapping("/image")
@@ -49,14 +49,14 @@ public class NewsController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> postNews(@RequestBody NewsDTO newsDTO) {
-        newsService.postNews(newsDTO);
+    public ResponseEntity<Void> postNews(@RequestBody NewsDTO newsDTO) {
+        newsService.post(newsDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/delete/{newsId}")
-    public ResponseEntity<?> deletePostById(@PathVariable UUID newsUUID) {
-        newsService.deletePostById(newsUUID);
+    public ResponseEntity<Void> deletePostById(@PathVariable UUID newsUUID) {
+        newsService.delete(newsUUID);
         return ResponseEntity.noContent().build();
     }
 
@@ -76,12 +76,12 @@ public class NewsController {
     }
 
     @PostMapping("/like/{newsId}")
-    public ResponseEntity<?> likePost(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> likePost(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(newsService.likePost(newsId, userDTO));
     }
 
     @DeleteMapping("/like/{newsId}")
-    public ResponseEntity<?> unlikePost(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> unlikePost(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(newsService.unlikePost(newsId, userDTO));
     }
 
@@ -97,12 +97,12 @@ public class NewsController {
 
 
     @PostMapping("/bookmark/{newsId}")
-    public ResponseEntity<?> bookmark(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> bookmark(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(newsService.bookmark(newsId, userDTO));
     }
 
     @DeleteMapping("/bookmark/{newsId}")
-    public ResponseEntity<?> removeBookmark(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> removeBookmark(@PathVariable UUID newsId, @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(newsService.removeBookmark(newsId, userDTO));
     }
     @GetMapping("/bookmark/{newsId}")

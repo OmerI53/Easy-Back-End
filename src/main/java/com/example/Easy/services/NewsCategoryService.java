@@ -20,7 +20,7 @@ public class NewsCategoryService {
     private final NewsCategoryRepository newsCategoryRepository;
     private final NewsCategoryMapper newsCategoryMapper;
 
-    public void addNewCategory(NewsCategoryDTO categoryDTO) {
+    public void add(NewsCategoryDTO categoryDTO) {
         NewsCategoryEntity parentCategory = null;
         if(categoryDTO.getParent() != null){
             parentCategory = newsCategoryRepository.findByname(categoryDTO.getParent().getName());
@@ -32,13 +32,13 @@ public class NewsCategoryService {
         newsCategoryRepository.save(newsCategoryEntity);
     }
 
-    public NewsCategoryDTO getNewsCategoryById(Long categoryId) {
+    public NewsCategoryDTO get(Long categoryId) {
         return newsCategoryRepository.findById(categoryId)
                 .map(newsCategoryMapper::toNewsCategoryDTO)
-                .orElse(null);
+                .orElseThrow(() -> new RuntimeException("news-category not found!"));
     }
 
-    public List<NewsCategoryDTO> getAllCategories() {
+    public List<NewsCategoryDTO> get(){
         return newsCategoryRepository.findAll()
                 .stream()
                 .map(newsCategoryMapper::toNewsCategoryDTO)

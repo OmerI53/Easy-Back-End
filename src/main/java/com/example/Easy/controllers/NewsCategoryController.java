@@ -24,16 +24,16 @@ public class NewsCategoryController {
 
     @GetMapping("/all-hierarchy")
     public List<NewsCategoryDTO> getAllCategories(){
-        return newsCategoryService.getAllCategories();
+        return newsCategoryService.get();
     }
 
     @GetMapping("/{categoryId}")
     public NewsCategoryDTO getCategoryById(@PathVariable("categoryId") Long categoryId){
-        return  newsCategoryService.getNewsCategoryById(categoryId);
+        return  newsCategoryService.get(categoryId);
     }
     @PostMapping("/new")
-    public ResponseEntity<?> addCategory(@RequestBody NewsCategoryDTO categoryDTO){
-        newsCategoryService.addNewCategory(categoryDTO);
+    public ResponseEntity<Void> addCategory(@RequestBody NewsCategoryDTO categoryDTO){
+        newsCategoryService.add(categoryDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

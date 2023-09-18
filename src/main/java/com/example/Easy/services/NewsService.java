@@ -58,7 +58,7 @@ public class NewsService {
 
 
 
-    public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy) {
+    public Page<NewsDTO> get(Integer pageNumber, Integer pageSize, String sortBy) {
         if(pageNumber==null && pageSize==null || sortBy==null){
             System.out.println("Some values are null!");
             return null;
@@ -68,7 +68,7 @@ public class NewsService {
         }
     }
 
-    public Page<NewsDTO> getNewsByCategoryName(String category, Integer pageNumber, Integer pageSize, String sortBy) {
+    public Page<NewsDTO> get(String category, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
 
         List<NewsDTO> newsEntities = newsCategoryRepository.findByname(category)
@@ -89,21 +89,21 @@ public class NewsService {
         return PageRequest.of(pageNumber, pageSize, sort);
     }
 
-    public Page<NewsDTO> getNewsByTitle(String title, Integer pageNumber, Integer pageSize, String sortBy) {
+    public Page<NewsDTO> getByTitle(String title, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
         return newsRepository.findByTitle(title, pageRequest)
                 .map(newsMapper::toNewsDTO);
     }
 
-    public NewsDTO getNewsById(UUID newsId) {
+    public NewsDTO get(UUID newsId) {
         return newsRepository.findById(newsId)
                 .map(newsMapper::toNewsDTO)
-                .orElse(null);
+                .orElseThrow(() -> new RuntimeException("newsId not found!"));
     }
 
-    public void postNews(NewsDTO newsDTO) {
-        UserEntity author = userRepository.findById(newsDTO.getAuthor().getUserId()).orElse(null);
-        NewsCategoryEntity category = newsCategoryRepository.findById(newsDTO.getCategory().getCategoryId()).orElse(null);
+    public void post(NewsDTO newsDTO) {
+        UserEntity author = userRepository.findById(newsDTO.getAuthor().getUserId()).orElseThrow(() -> new RuntimeException("author not found!"));
+        NewsCategoryEntity category = newsCategoryRepository.findById(newsDTO.getCategory().getCategoryId()).orElseThrow(() -> new RuntimeException("category not found!"));
 
         if (author == null && category == null) {
             System.out.println("Author and category not found!");
@@ -120,7 +120,7 @@ public class NewsService {
         }
     }
 
-    public void deletePostById(UUID newsUUID) {
+    public void delete(UUID newsUUID) {
         if(newsUUID==null){
             System.out.println("NewsID is null!");
         }else{
@@ -132,7 +132,7 @@ public class NewsService {
     public Page<NewsDTO> getRecommendedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         Map<String, Integer> rep = new HashMap<>();
 
-        userService.getUserRecordsById(userId, null, null, "repeatedRead")
+        userService.getRecords(userId, null, null, "repeatedRead")
                 .forEach(x -> {
                     int val = x.getRepeatedRead();
                     if (x.isPostlike()) val += 1;
@@ -143,7 +143,7 @@ public class NewsService {
         List<NewsDTO> newsDTOS = rep.entrySet().stream()
                 .flatMap(entry -> {
                     int count = (int) (entry.getValue() * 0.2) + 1;
-                    return getNewsByCategoryName(entry.getKey(), null, count, null).stream();
+                    return get(entry.getKey(), null, count, null).stream();
                 })
                 .collect(Collectors.toList());
 
@@ -192,8 +192,8 @@ public class NewsService {
     }
 
     public String likePost(UUID newsId, UserDTO userDTO) {
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
-        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
         RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
 
         if (news == null || user == null) {
@@ -206,8 +206,8 @@ public class NewsService {
     }
 
     public String unlikePost(UUID newsId, UserDTO userDTO) {
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
-        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
         RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
 
         if (news == null || user == null) {
@@ -220,8 +220,8 @@ public class NewsService {
     }
 
     public String bookmark(UUID newsId, UserDTO userDTO) {
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
-        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
         RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
 
         if (news == null || user == null) {
@@ -236,8 +236,8 @@ public class NewsService {
 
     public String removeBookmark(UUID newsId, UserDTO userDTO) {
 
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
-        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
         RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
 
         if (news == null || user == null) {
@@ -250,7 +250,7 @@ public class NewsService {
     }
 
     public int getLikes(UUID newsId, Integer pageNumber, Integer pageSize, String sortBy) {
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
         if (news == null) {
             System.out.println("newsId null");
             return 0;
@@ -261,7 +261,7 @@ public class NewsService {
     }
 
     public int getBookmarks(UUID newsId, Integer pageNumber, Integer pageSize, String sortBy) {
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
         if (news == null) {
             System.out.println("newsId null");
             return 0;
@@ -272,7 +272,7 @@ public class NewsService {
     }
 
     private int getRecordCountByNewsAndPostType(UUID newsId, boolean postType) {
-        NewsEntity news = newsRepository.findById(newsId).orElse(null);
+        NewsEntity news = newsRepository.findById(newsId).orElseThrow(() -> new RuntimeException("newsId not found!"));
 
         if (news == null) {
             return 0;
@@ -284,7 +284,7 @@ public class NewsService {
 
     public Page<NewsDTO> getFollowingNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserEntity user = userRepository.findById(userId).orElse(null);
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         if (user == null) {
             return Page.empty();

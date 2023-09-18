@@ -76,7 +76,7 @@ public class NotificationService {
         firebaseMessaging.unsubscribeFromTopic(Collections.singletonList(token),topic);
     }
 
-    public List<NotificationDTO> getMessageByTitle(String title) {
+    public List<NotificationDTO> get(String title) {
         return notificationRepository.getNotificationByTitle(title)
                 .stream()
                 .map(notificationMapper::toNotificationDTO)

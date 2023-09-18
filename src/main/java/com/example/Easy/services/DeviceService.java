@@ -49,14 +49,14 @@ public class DeviceService {
         return PageRequest.of(pageNumber, pageSize, sort);
     }
 
-    public DeviceDTO addNewDevice(DeviceDTO deviceDTO) throws FirebaseMessagingException {
+    public DeviceDTO add(DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
         notificationService.subscribeToTopic("All",deviceDTO.getDeviceToken());
         DeviceEntity device = deviceMapper.toDeviceEntity(deviceDTO);
         deviceRepository.save(device);
         return deviceMapper.toDeviceDTO(device);
     }
-    public void removeDeviceById(UUID deviceId) {
+    public void delete(UUID deviceId) {
         deviceRepository.deleteById(deviceId);
     }
     public Page<DeviceDTO> listAllDevices(Integer pageNumber, Integer pageSize, String sortBy) {
@@ -64,8 +64,8 @@ public class DeviceService {
         return deviceRepository.findAll(pageRequest).map(deviceMapper::toDeviceDTO);
     }
 
-    public void patchDevice(UUID deviceId, DeviceDTO deviceDTO) {
-        DeviceEntity deviceEntity = deviceRepository.findById(deviceId).orElse(null);
+    public void patch(UUID deviceId, DeviceDTO deviceDTO) {
+        DeviceEntity deviceEntity = deviceRepository.findById(deviceId).orElseThrow(() -> new RuntimeException("deviceId not found!"));
         if(deviceEntity==null || deviceDTO == null)
             return;
         if(deviceDTO.getDeviceToken()!=null & !Objects.equals(deviceDTO.getDeviceToken(), ""))
@@ -78,9 +78,9 @@ public class DeviceService {
         deviceRepository.save(deviceEntity);
     }
 
-    public AuthResponseDTO loginToDevice(UUID deviceId, UserDTO userDTO) {
+    public AuthResponseDTO login(UUID deviceId, UserDTO userDTO) {
         AuthResponseDTO auth = authenticationService.authenticate(userDTO);
-        DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
+        DeviceEntity device = deviceRepository.findById(deviceId).orElseThrow(() -> new RuntimeException("deviceId not found!"));
         UserEntity user = userRepository.findByEmail(userDTO.getEmail());
         if(device !=null && user !=null && !device.getUsers().contains(user)){
             device.getUsers().add(user);
@@ -89,6 +89,7 @@ public class DeviceService {
             userRepository.save(user);
         }
         try {
+            assert device != null;
             notificationService.subscribeToTopic(userDTO.getUserId().toString(),device.getDeviceToken());
         } catch (FirebaseMessagingException e) {
             throw new RuntimeException(e);
@@ -96,9 +97,9 @@ public class DeviceService {
         return auth;
     }
 
-    public void logoutFromDevice(UUID deviceId, UserDTO userDTO) {
-        DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
-        UserEntity user = userRepository.findById(userDTO.getUserId()).orElse(null);
+    public void logout(UUID deviceId, UserDTO userDTO) {
+        DeviceEntity device = deviceRepository.findById(deviceId).orElseThrow(() -> new RuntimeException("deviceId not found!"));
+        UserEntity user = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         if(device == null || user == null){
             System.out.println("device or user null");
@@ -117,8 +118,8 @@ public class DeviceService {
 
     }
 
-    public Page<UserDTO> getDeviceUsers(UUID deviceId, Integer pageNumber, Integer pageSize, String sortBy) {
-        DeviceEntity device = deviceRepository.findById(deviceId).orElse(null);
+    public Page<UserDTO> get(UUID deviceId, Integer pageNumber, Integer pageSize, String sortBy) {
+        DeviceEntity device = deviceRepository.findById(deviceId).orElseThrow(() -> new RuntimeException("deviceId not found!"));
         if(device == null){
             return Page.empty();
         }else{
@@ -129,7 +130,6 @@ public class DeviceService {
         }
 
     }
-    /////HATA VEREBİLİR///
     private PagedListHolder pagedListHolderFromRequest(PageRequest pageRequest, List list) {
         PagedListHolder pagedListHolder = new PagedListHolder<>(list);
         pagedListHolder.setPageSize(pageRequest.getPageSize());
@@ -137,7 +137,7 @@ public class DeviceService {
         pagedListHolder.setSort((SortDefinition) pageRequest.getSort());
         return pagedListHolder;
     }
-    /////HATA VEREBİLİR///
+
 
 
 

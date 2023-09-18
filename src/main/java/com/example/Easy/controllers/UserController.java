@@ -1,9 +1,6 @@
 package com.example.Easy.controllers;
 
-import com.example.Easy.models.DeviceDTO;
-import com.example.Easy.models.NewsDTO;
-import com.example.Easy.models.RecordsDTO;
-import com.example.Easy.models.UserDTO;
+import com.example.Easy.models.*;
 import com.example.Easy.services.AuthenticationService;
 import com.example.Easy.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,40 +18,40 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationService authenticationService;
     @PostMapping("/auth/register")
-    public ResponseEntity<?> register(@RequestBody UserDTO userDTO){
+    public ResponseEntity<AuthResponseDTO> register(@RequestBody UserDTO userDTO){
         return ResponseEntity.ok(authenticationService.register(userDTO));
     }
     @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable("userId") UUID userId){
-        userService.deleteUser(userId);
+        userService.delete(userId);
     }
     @PatchMapping("/{userId}")
     public void patchUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
-        userService.patchUserById(userId,userDTO);
+        userService.patch(userId,userDTO);
     }
     @GetMapping("/all")
     public Page<UserDTO> listUsers(@RequestParam(required = false) Integer pageNumber,
                                    @RequestParam(required = false) Integer pageSize,
                                    @RequestParam(required = false) String sortBy){
-        return userService.listUsers(pageNumber,pageSize, sortBy);
+        return userService.get(pageNumber,pageSize, sortBy);
     }
     @GetMapping("/{userId}")
     public UserDTO getUserById(@PathVariable("userId") UUID userId){
-        return userService.getUserById(userId);
+        return userService.get(userId);
     }
 
     @GetMapping("/email/{email}")
     public UserDTO getUserByEmail(@PathVariable("email") String email){
-        return userService.findUserByEmail(email);
+        return userService.find(email);
     }
     @PostMapping("/follow/{userId}") //target of follow is {userId}, person following is userDTO
     public void followUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
-        userService.followUserById(userId,userDTO);
+        userService.follow(userId,userDTO);
 
     }
     @DeleteMapping("/follow/{userId}") //target of follow is {userId}, person following is userDTO
     public void unfollowUserById(@PathVariable("userId") UUID userId,@RequestBody UserDTO userDTO){
-        userService.unfollowUserById(userId,userDTO);
+        userService.unfollow(userId,userDTO);
     }
 
     @GetMapping("/followers/{userId}")
@@ -62,25 +59,25 @@ public class UserController {
                                              @RequestParam(required = false) Integer pageNumber,
                                              @RequestParam(required = false) Integer pageSize,
                                              @RequestParam(required = false) String sortBy){
-        return userService.getAllFollowers(userId, pageNumber,pageSize,sortBy);
+        return userService.getFollowers(userId, pageNumber,pageSize,sortBy);
     }
     @GetMapping("/following/{userId}")
     public Page<UserDTO> getAllFollowingById(@PathVariable("userId") UUID userId,
                                              @RequestParam(required = false) Integer pageNumber,
                                              @RequestParam(required = false) Integer pageSize,
                                              @RequestParam(required = false) String sortBy){
-        return userService.getAllFollowing(userId, pageNumber, pageSize, sortBy);
+        return userService.getFollowing(userId, pageNumber, pageSize, sortBy);
     }
     @PostMapping("/records/{userId}")
     public void readNews(@PathVariable("userId") UUID userId ,@RequestBody NewsDTO newsDTO){
-        userService.readNews(userId,newsDTO);
+        userService.readCount(userId,newsDTO);
     }
     @GetMapping("/records/{userId}")
     public Page<RecordsDTO> getUserRecordsById(@PathVariable("userId") UUID userId,
                                                @RequestParam(required = false) Integer pageNumber,
                                                @RequestParam(required = false) Integer pageSize,
                                                @RequestParam(required = false) String sortBy){
-        return userService.getUserRecordsById(userId,pageNumber,pageSize,sortBy);
+        return userService.getRecords(userId,pageNumber,pageSize,sortBy);
     }
     @GetMapping("/likes/{userId}")
     public Page<NewsDTO> getLikedNews(@PathVariable UUID userId,

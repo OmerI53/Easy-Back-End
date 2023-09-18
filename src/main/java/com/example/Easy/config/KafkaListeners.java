@@ -28,7 +28,7 @@ public class KafkaListeners {
         //On recieve it will send notification
         String[] message = data.split(":");
         try {
-            UserDTO user = userService.getUserById(UUID.fromString(message[0]));
+            UserDTO user = userService.get(UUID.fromString(message[0]));
             NotificationDTO notification = NotificationDTO.builder()
                     .title("New Follower")
                     .topic(user.getUserId().toString())

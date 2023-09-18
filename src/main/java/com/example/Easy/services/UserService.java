@@ -66,19 +66,19 @@ public class UserService {
         return PageRequest.of(pageNumber, pageSize, sort);
     }
 
-    public void deleteUser(UUID userId){
+    public void delete(UUID userId){
         userRepository.deleteById(userId);
     }
-    public Page<UserDTO> listUsers(Integer pageNumber, Integer pageSize, String sortBy) {
+    public Page<UserDTO> get(Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
         return userRepository.findAll(pageRequest).map(userMapper::toUserDTO);
     }
-    public UserDTO getUserById(UUID userId) {
-        return userRepository.findById(userId).map(userMapper::toUserDTO).orElse(null);
+    public UserDTO get(UUID userId) {
+        return userRepository.findById(userId).map(userMapper::toUserDTO).orElseThrow(() -> new RuntimeException("userId not found!"));
     }
 
-    public void patchUserById(UUID userId, UserDTO userDTO) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
+    public void patch(UUID userId, UserDTO userDTO) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
         if(user==null || userDTO == null)
             return;
         if(userDTO.getName()!=null && !userDTO.getName().equals(""))
@@ -92,9 +92,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void followUserById(UUID userId, UserDTO userDTO) {
-        UserEntity userFollowing = userRepository.findById(userDTO.getUserId()).orElse(null);
-        UserEntity userFollowed = userRepository.findById(userId).orElse(null);
+    public void follow(UUID userId, UserDTO userDTO) {
+        UserEntity userFollowing = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
+        UserEntity userFollowed = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
         boolean notExisting = userFollowing.getFollowing().add(userFollowed);
         if(notExisting) {
             userFollowed.getFollowers().add(userFollowing);
@@ -108,9 +108,9 @@ public class UserService {
         }
     }
 
-    public void unfollowUserById(UUID userId, UserDTO userDTO) {
-        UserEntity userFollowing = userRepository.findById(userDTO.getUserId()).orElse(null);
-        UserEntity userFollowed = userRepository.findById(userId).orElse(null);
+    public void unfollow(UUID userId, UserDTO userDTO) {
+        UserEntity userFollowing = userRepository.findById(userDTO.getUserId()).orElseThrow(() -> new RuntimeException("userId not found!"));
+        UserEntity userFollowed = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
         if (userFollowed == null || userFollowing == null){
             System.out.println("There is no followed user!");
         }else{
@@ -120,8 +120,8 @@ public class UserService {
         }
     }
 
-    public Page<UserDTO> getAllFollowers(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
-        UserEntity user = userRepository.findById(userId).orElse(null);
+    public Page<UserDTO> getFollowers(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         if(user ==null) {
             System.out.println("empty user!");
@@ -137,8 +137,8 @@ public class UserService {
         }
     }
 
-    public Page<UserDTO> getAllFollowing(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
+    public Page<UserDTO> getFollowing(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
         if(user ==null){
             System.out.println("empty user!");
             return Page.empty();
@@ -153,9 +153,9 @@ public class UserService {
             return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
         }
     }
-    public void readNews(UUID userId, NewsDTO newsDTO) {
-        UserEntity user = userRepository.findById(userId).orElse(null);
-        NewsEntity news = newsRepository.findById(newsDTO.getNewsId()).orElse(null);
+    public void readCount(UUID userId, NewsDTO newsDTO) {
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
+        NewsEntity news = newsRepository.findById(newsDTO.getNewsId()).orElseThrow(() -> new RuntimeException("newsId not found!"));
         RecordsEntity records = recordsRepository.findByUserAndNews(user,news);
         if (user == null || news == null){
             System.out.println("User or News is null!");
@@ -175,20 +175,20 @@ public class UserService {
         }
     }
 
-    public Page<RecordsDTO> getUserRecordsById(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
+    public Page<RecordsDTO> getRecords(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         // Default sortby is only for user
         if (sortBy == null || sortBy.isEmpty()) {
             sortBy = "recordId";
         }
 
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserEntity user = userRepository.findById(userId).orElse(null);
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         return recordsRepository.findByUser(user, pageRequest)
                 .map(recordsMapper::toRecordsDTO);
     }
 
-    public UserDTO findUserByEmail(String email) {
+    public UserDTO find(String email) {
         UserEntity user = userRepository.findByEmail(email);
         return user != null ? userMapper.toUserDTO(user) : null;
     }
@@ -204,7 +204,7 @@ public class UserService {
     /////HATA VEREBİLİR///
     public Page<NewsDTO> getLikedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        UserEntity user = userRepository.findById(userId).orElse(null);
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         List<NewsDTO> newsEntities = user != null
                 ? recordsRepository.findByUserAndPostlike(user, true)
@@ -218,7 +218,7 @@ public class UserService {
 
     public Page<NewsDTO> getBookmarkedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy){
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        UserEntity user = userRepository.findById(userId).orElse(null);
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         List<NewsDTO> newsEntities = user != null
                 ? recordsRepository.findByUserAndPostbookmark(user, true)
@@ -232,7 +232,7 @@ public class UserService {
 
     public Page<DeviceDTO> getDevices(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        UserEntity users = userRepository.findById(userId).orElse(null);
+        UserEntity users = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         List<DeviceDTO> devices = users != null ? users.getDevice()
                 .stream().map(deviceMapper::toDeviceDTO).collect(Collectors.toList())
