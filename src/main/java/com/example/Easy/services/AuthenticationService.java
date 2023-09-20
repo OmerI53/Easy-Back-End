@@ -1,5 +1,6 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.AuthenticationDao;
 import com.example.Easy.entities.UserEntity;
 import com.example.Easy.models.AuthResponseDTO;
 import com.example.Easy.models.UserDTO;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationService implements AuthenticationDao {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;

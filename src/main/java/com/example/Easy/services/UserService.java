@@ -1,5 +1,6 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.UserDao;
 import com.example.Easy.entities.NewsEntity;
 import com.example.Easy.entities.NotificationEntity;
 import com.example.Easy.entities.RecordsEntity;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDao {
 
     private final NotificationRepository notificationRepository;
     private final KafkaTemplate<String,String> kafkaTemplate;
@@ -71,10 +72,10 @@ public class UserService {
     }
     public Page<UserDTO> get(Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        return userRepository.findAll(pageRequest).map(userMapper::toUserDTO);
+        return userRepository.findAll(pageRequest).map(UserMapper::toUserDTO);
     }
     public UserDTO get(UUID userId) {
-        return userRepository.findById(userId).map(userMapper::toUserDTO).orElseThrow(() -> new RuntimeException("userId not found!"));
+        return userRepository.findById(userId).map(UserMapper::toUserDTO).orElseThrow(() -> new RuntimeException("userId not found!"));
     }
 
     public void patch(UUID userId, UserDTO userDTO) {
@@ -130,7 +131,7 @@ public class UserService {
             PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
 
             List<UserDTO> users = user.getFollowers()
-                    .stream().map(userMapper::toUserDTO)
+                    .stream().map(UserMapper::toUserDTO)
                     .toList();
 
             return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
@@ -147,7 +148,7 @@ public class UserService {
 
             List<UserDTO> users= user.getFollowing()
                     .stream()
-                    .map(userMapper::toUserDTO)
+                    .map(UserMapper::toUserDTO)
                     .collect(Collectors.toList());
 
             return new PageImpl<>(pagedListHolderFromRequest(pageRequest,users).getPageList());
@@ -185,12 +186,12 @@ public class UserService {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         return recordsRepository.findByUser(user, pageRequest)
-                .map(recordsMapper::toRecordsDTO);
+                .map(RecordsMapper::toRecordsDTO);
     }
 
     public UserDTO find(String email) {
         UserEntity user = userRepository.findByEmail(email);
-        return user != null ? userMapper.toUserDTO(user) : null;
+        return user != null ? UserMapper.toUserDTO(user) : null;
     }
 
     /////HATA VEREBİLİR///
@@ -209,7 +210,7 @@ public class UserService {
         List<NewsDTO> newsEntities = user != null
                 ? recordsRepository.findByUserAndPostlike(user, true)
                 .stream()
-                .map(record -> newsMapper.toNewsDTO(record.getNews()))
+                .map(record -> NewsMapper.toNewsDTO(record.getNews()))
                 .collect(Collectors.toList())
                 : Collections.emptyList();
 
@@ -223,7 +224,7 @@ public class UserService {
         List<NewsDTO> newsEntities = user != null
                 ? recordsRepository.findByUserAndPostbookmark(user, true)
                 .stream()
-                .map(record -> newsMapper.toNewsDTO(record.getNews()))
+                .map(record -> NewsMapper.toNewsDTO(record.getNews()))
                 .collect(Collectors.toList())
                 : Collections.emptyList();
 
@@ -235,7 +236,7 @@ public class UserService {
         UserEntity users = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("userId not found!"));
 
         List<DeviceDTO> devices = users != null ? users.getDevice()
-                .stream().map(deviceMapper::toDeviceDTO).collect(Collectors.toList())
+                .stream().map(DeviceMapper::toDeviceDTO).collect(Collectors.toList())
                 : Collections.emptyList();
         return new PageImpl<DeviceDTO>(pagedListHolderFromRequest(pageRequest,devices).getPageList());
     }

@@ -7,9 +7,23 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface CommentMapper {
 
-    CommentEntity toCommentEntity(CommentDTO commentDTO);
+    public static CommentDTO toCommentDTO(CommentEntity commentEntity){
+        return new CommentDTO(
+                commentEntity.getCommentId(),
+                commentEntity.getText(),
+                commentEntity.getAuthor(),
+                commentEntity.getNews()
+        );
+    }
+    public static CommentEntity toCommentEntity(CommentDTO commentDTO){
+        return new CommentEntity(
+                commentDTO.getCommentId(),
+                commentDTO.getText(),
+                commentDTO.getAuthor(),
+                commentDTO.getNewsId()
+        );
+    }
 
-    CommentDTO toCommentDTO(CommentEntity commentEntity);
 
 }
 

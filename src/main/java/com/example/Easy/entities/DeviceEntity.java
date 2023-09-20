@@ -48,4 +48,6 @@ public class DeviceEntity {
     @ManyToMany
     private List<UserEntity> users;
 
+    public DeviceEntity(UUID deviceID, String timeZone, DeviceType deviceType, String deviceToken) {
+    }
 }

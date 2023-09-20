@@ -1,5 +1,6 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.NotificationDao;
 import com.example.Easy.entities.NotificationEntity;
 import com.example.Easy.mappers.NotificationMapper;
 import com.example.Easy.models.NotificationDTO;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class NotificationService implements NotificationDao {
 
     private  final NotificationRepository notificationRepository;
     private  final NotificationMapper notificationMapper;
@@ -28,7 +29,7 @@ public class NotificationService {
         if(notificationDTO.getUserToken()==null) {
             throw new NullPointerException("User token cannot be null");
         }
-        NotificationEntity notificationEntity = notificationMapper.toNotificationEntity(notificationDTO);
+        NotificationEntity notificationEntity = NotificationMapper.toNotificationEntity(notificationDTO);
         notificationRepository.save(notificationEntity);
         //build notification from notificationDTO
         Notification notification = Notification.builder()
@@ -51,7 +52,7 @@ public class NotificationService {
             throw new NullPointerException("Topic cannot be null");
         }
 
-        NotificationEntity notificationEntity = notificationMapper.toNotificationEntity(notificationDTO);
+        NotificationEntity notificationEntity = NotificationMapper.toNotificationEntity(notificationDTO);
         notificationRepository.save(notificationEntity);
 
         Notification notification = Notification.builder()
@@ -79,7 +80,7 @@ public class NotificationService {
     public List<NotificationDTO> get(String title) {
         return notificationRepository.getNotificationByTitle(title)
                 .stream()
-                .map(notificationMapper::toNotificationDTO)
+                .map(NotificationMapper::toNotificationDTO)
                 .collect(Collectors.toList());
     }
 }

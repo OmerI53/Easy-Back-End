@@ -1,5 +1,6 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.CommentDao;
 import com.example.Easy.entities.CommentEntity;
 import com.example.Easy.entities.NewsEntity;
 import com.example.Easy.entities.UserEntity;
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CommentService {
+public class CommentService implements CommentDao {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
 
@@ -40,18 +41,22 @@ public class CommentService {
     }
 
     public CommentDTO get(UUID commentId) {
-        return commentMapper.toCommentDTO(commentRepository.findById(commentId).orElse(null));
+        return CommentMapper.toCommentDTO(commentRepository.findById(commentId).orElse(null));
     }
 
     public void delete(UUID commentId) {
         CommentEntity commentEntity = commentRepository.findById(commentId).orElse(null);
+        assert commentEntity != null;
         commentRepository.delete(commentEntity);
     }
 
     public CommentDTO patch(UUID commentId,CommentDTO commentDTO) {
         CommentEntity commentEntity = commentRepository.findById(commentId).orElse(null);
-        if(commentDTO.getText()!=null || !commentDTO.getText().equals(""))
+        if(commentDTO.getText()!=null || !commentDTO.getText().equals("")) {
+            assert commentEntity != null;
             commentEntity.setText(commentDTO.getText());
-        return commentMapper.toCommentDTO(commentRepository.save(commentEntity));
+        }
+        assert commentEntity != null;
+        return CommentMapper.toCommentDTO(commentRepository.save(commentEntity));
     }
 }

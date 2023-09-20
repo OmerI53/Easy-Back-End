@@ -1,10 +1,14 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.NewsCategoryDao;
 import com.example.Easy.entities.NewsCategoryEntity;
 import com.example.Easy.mappers.NewsCategoryMapper;
 import com.example.Easy.models.NewsCategoryDTO;
 import com.example.Easy.repository.NewsCategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class NewsCategoryService {
+public class NewsCategoryService implements NewsCategoryDao {
 
     private final NewsCategoryRepository newsCategoryRepository;
     private final NewsCategoryMapper newsCategoryMapper;
@@ -34,21 +38,21 @@ public class NewsCategoryService {
 
     public NewsCategoryDTO get(Long categoryId) {
         return newsCategoryRepository.findById(categoryId)
-                .map(newsCategoryMapper::toNewsCategoryDTO)
+                .map(NewsCategoryMapper::toNewsCategoryDTO)
                 .orElseThrow(() -> new RuntimeException("news-category not found!"));
     }
 
     public List<NewsCategoryDTO> get(){
         return newsCategoryRepository.findAll()
                 .stream()
-                .map(newsCategoryMapper::toNewsCategoryDTO)
+                .map(NewsCategoryMapper::toNewsCategoryDTO)
                 .collect(Collectors.toList());
     }
 
     public List<NewsCategoryDTO> getAllRoots() {
         return newsCategoryRepository.findByparent(null)
                 .stream()
-                .map(newsCategoryMapper::toNewsCategoryDTO)
+                .map(NewsCategoryMapper::toNewsCategoryDTO)
                 .collect(Collectors.toList());
     }
 

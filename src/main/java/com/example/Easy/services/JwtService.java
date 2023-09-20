@@ -1,5 +1,6 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.JwtDao;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,7 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JwtService {
+public class JwtService implements JwtDao {
     private static final String SECRET_KEY = "uOUnp+/pZyEGl83RYAmqpp1VmPz0MhkkoyrdsSz/50E=";
 
 

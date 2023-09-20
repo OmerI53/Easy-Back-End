@@ -1,5 +1,7 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.DeviceDao;
+import com.example.Easy.dao.NotificationDao;
 import com.example.Easy.entities.DeviceEntity;
 import com.example.Easy.entities.UserEntity;
 import com.example.Easy.mappers.DeviceMapper;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DeviceService {
+public class DeviceService implements DeviceDao {
     private final NotificationService notificationService;
 
     private final AuthenticationService authenticationService;
@@ -52,16 +54,16 @@ public class DeviceService {
     public DeviceDTO add(DeviceDTO deviceDTO) throws FirebaseMessagingException {
         //TODO cant bootstrap data since a real FCM is needed
         notificationService.subscribeToTopic("All",deviceDTO.getDeviceToken());
-        DeviceEntity device = deviceMapper.toDeviceEntity(deviceDTO);
+        DeviceEntity device = DeviceMapper.toDeviceEntity(deviceDTO);
         deviceRepository.save(device);
-        return deviceMapper.toDeviceDTO(device);
+        return DeviceMapper.toDeviceDTO(device);
     }
     public void delete(UUID deviceId) {
         deviceRepository.deleteById(deviceId);
     }
     public Page<DeviceDTO> listAllDevices(Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        return deviceRepository.findAll(pageRequest).map(deviceMapper::toDeviceDTO);
+        return deviceRepository.findAll(pageRequest).map(DeviceMapper::toDeviceDTO);
     }
 
     public void patch(UUID deviceId, DeviceDTO deviceDTO) {
@@ -125,7 +127,7 @@ public class DeviceService {
         }else{
             PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
             List<UserDTO> userDTOS = device.getUsers()
-                    .stream().map(userMapper::toUserDTO).collect(Collectors.toList());
+                    .stream().map(UserMapper::toUserDTO).collect(Collectors.toList());
             return new PageImpl<>(pagedListHolderFromRequest(pageRequest,userDTOS).getPageList());
         }
 

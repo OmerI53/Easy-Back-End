@@ -1,5 +1,6 @@
 package com.example.Easy.entities;
 
+import com.example.Easy.models.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.firebase.database.annotations.NotNull;
 import jakarta.persistence.*;
@@ -38,4 +39,6 @@ public class CommentEntity {
     @JsonIgnore
     private NewsEntity news;
 
+    public CommentEntity(UUID commentId, String text, UserDTO author, UUID newsId) {
+    }
 }

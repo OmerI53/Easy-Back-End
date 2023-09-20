@@ -1,5 +1,6 @@
 package com.example.Easy.entities;
 
+import com.example.Easy.models.NewsCategoryDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,4 +39,6 @@ public class NewsCategoryEntity {
     @OneToMany(mappedBy = "newsCategory",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
     private List<RecordsEntity> categoryRecord;
 
+    public NewsCategoryEntity(Long categoryId, String name, NewsCategoryDTO parent) {
+    }
 }

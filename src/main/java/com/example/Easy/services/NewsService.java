@@ -1,5 +1,6 @@
 package com.example.Easy.services;
 
+import com.example.Easy.dao.NewsDao;
 import com.example.Easy.entities.NewsCategoryEntity;
 import com.example.Easy.entities.NewsEntity;
 import com.example.Easy.entities.RecordsEntity;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class NewsService {
+public class NewsService implements NewsDao {
     private final NewsCategoryRepository newsCategoryRepository;
 
 
@@ -64,7 +65,7 @@ public class NewsService {
             return null;
         }else{
             PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-            return newsRepository.findAll(pageRequest).map(newsMapper::toNewsDTO);
+            return newsRepository.findAll(pageRequest).map(NewsMapper::toNewsDTO);
         }
     }
 
@@ -74,7 +75,7 @@ public class NewsService {
         List<NewsDTO> newsEntities = newsCategoryRepository.findByname(category)
                 .getNews()
                 .stream()
-                .map(newsMapper::toNewsDTO)
+                .map(NewsMapper::toNewsDTO)
                 .toList();
 
         return new PageImpl<>(newsEntities, pageRequest, newsEntities.size());
@@ -92,12 +93,12 @@ public class NewsService {
     public Page<NewsDTO> getByTitle(String title, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
         return newsRepository.findByTitle(title, pageRequest)
-                .map(newsMapper::toNewsDTO);
+                .map(NewsMapper::toNewsDTO);
     }
 
     public NewsDTO get(UUID newsId) {
         return newsRepository.findById(newsId)
-                .map(newsMapper::toNewsDTO)
+                .map(NewsMapper::toNewsDTO)
                 .orElseThrow(() -> new RuntimeException("newsId not found!"));
     }
 
@@ -296,7 +297,7 @@ public class NewsService {
                 .toList();
 
         List<NewsDTO> newsDTOs = news.stream()
-                .map(newsMapper::toNewsDTO)
+                .map(NewsMapper::toNewsDTO)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(newsDTOs, pageRequest, newsDTOs.size());

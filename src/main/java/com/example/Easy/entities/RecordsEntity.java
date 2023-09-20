@@ -1,5 +1,8 @@
 package com.example.Easy.entities;
 
+import com.example.Easy.models.NewsCategoryDTO;
+import com.example.Easy.models.NewsDTO;
+import com.example.Easy.models.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,5 +48,8 @@ public class RecordsEntity {
     @Column(columnDefinition = "tinyint(1) default 0")
     private boolean postbookmark;
 
+    public RecordsEntity(UUID recordId, UserDTO user, NewsCategoryDTO newsCategory, NewsDTO news, int repeatedRead) {
+
+    }
 }
 

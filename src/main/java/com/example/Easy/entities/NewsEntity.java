@@ -1,5 +1,8 @@
 package com.example.Easy.entities;
 
+import com.example.Easy.models.CommentDTO;
+import com.example.Easy.models.NewsCategoryDTO;
+import com.example.Easy.models.UserDTO;
 import com.google.firebase.database.annotations.NotNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -58,5 +61,7 @@ public class NewsEntity {
     private List<RecordsEntity> newsRecord;
 
 
+    public NewsEntity(UUID newsId, String title, String text, String image, LocalDateTime creationTime, UserDTO author, NewsCategoryDTO category, List<CommentDTO> comments) {
+    }
 }
 

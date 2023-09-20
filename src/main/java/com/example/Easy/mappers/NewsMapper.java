@@ -6,7 +6,30 @@ import org.mapstruct.Mapper;
 
 @Mapper
 public interface NewsMapper {
-    NewsDTO toNewsDTO(NewsEntity newsEntity);
-    NewsEntity toNewsEntity(NewsDTO newsDTO);
+    public static NewsDTO toNewsDTO(NewsEntity newsEntity){
+        return new NewsDTO(
+                newsEntity.getNewsId(),
+                newsEntity.getTitle(),
+                newsEntity.getText(),
+                newsEntity.getImage(),
+                newsEntity.getAuthor(),
+                newsEntity.getCreationTime(),
+                newsEntity.getCategory(),
+                newsEntity.getComments(),
+                newsEntity.getNewsRecord()
+        );
+    }
+    public static NewsEntity toNewsEntity(NewsDTO newsDTO){
+        return new NewsEntity(
+                newsDTO.getNewsId(),
+                newsDTO.getTitle(),
+                newsDTO.getText(),
+                newsDTO.getImage(),
+                newsDTO.getCreationTime(),
+                newsDTO.getAuthor(),
+                newsDTO.getCategory(),
+                newsDTO.getComments()
+        );
+    }
 }
 

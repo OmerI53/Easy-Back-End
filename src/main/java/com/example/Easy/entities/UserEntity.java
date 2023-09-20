@@ -76,6 +76,10 @@ public class UserEntity implements UserDetails {
     //Role of the user default it is 1 (cant post)
     private Integer role;
 
+    public UserEntity(UUID userId, String name, String image, String password, Integer role, String email) {
+
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
