@@ -1,11 +1,11 @@
 package com.example.Easy.services;
 
+import com.example.Easy.repository.dao.UserDao;
 import com.example.Easy.mappers.UserMapper;
 import com.example.Easy.models.DeviceDTO;
 import com.example.Easy.models.NewsDTO;
 import com.example.Easy.models.RecordsDTO;
 import com.example.Easy.models.UserDTO;
-import com.example.Easy.repository.UserRepository;
 import com.example.Easy.requests.CreateReadRequest;
 import com.example.Easy.requests.CreateUserRequest;
 import com.example.Easy.requests.FollowRequest;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserDao userDao;
     private final UserMapper userMapper;
 
     private final ImageService imageService;
@@ -63,7 +63,7 @@ public class UserService {
                 .image(imageUrl)
                 .password(passwordEncoder.encode(createUserRequest.getPassword()))
                 .build();
-        userId = userRepository.save(userMapper.toUserEntity(user)).getUserId();
+        userId = userDao.save(user).getUserId();
 
         String jwt = authenticationService.generateJTW(user);
         retMap.put("imageUrl", imageUrl);
@@ -74,24 +74,28 @@ public class UserService {
 
     public Page<UserDTO> listUsers(String name, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        return userRepository.findAll(pageRequest).map(userMapper::toUserDTO);
+        return userDao.getAll(pageRequest);
     }
 
-    public UserDTO getUserById(UUID userId) {
-        return userMapper.toUserDTO(userRepository.findById(userId)
-                .orElseThrow(() -> new NullPointerException(source.getMessage("user.notfound", null, LocaleContextHolder.getLocale()))));
+    public UserDTO getUser(UUID userId) {
+        return userDao.get(userId);
     }
-
-    @Transactional
-    public UserDTO deleteUser(UUID userId) {
-        UserDTO user = getUserById(userId);
-        userRepository.deleteById(userId);
+    public UserDTO getUserByName(String name) {
+        UserDTO user = userDao.get(name);
+        if(user==null)
+            throw new NullPointerException(source.getMessage("user.notfound", null, LocaleContextHolder.getLocale()));
         return user;
     }
 
     @Transactional
+    public UserDTO deleteUser(UUID userId) {
+        UserDTO user = getUser(userId);
+        return userDao.delete(user);
+    }
+
+    @Transactional
     public UserDTO patchUserById(UUID userId, CreateUserRequest request) throws IOException {
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         if (request.getName() != null && !request.getName().equals(""))
             user.setName(request.getName());
         if (request.getImage() != null)
@@ -102,36 +106,36 @@ public class UserService {
             user.setRole(request.getRole());
         if(user.getNews()!=null)
             user.getNews().forEach(x->x.setAuthor(user));
-        return userMapper.toUserDTO(userRepository.save(userMapper.toUserEntity(user)));
+        return userDao.update(user);
     }
 
     @Transactional
     public FollowRequest followUser(FollowRequest followRequest) {
-        UserDTO userFollowing = getUserById(followRequest.getUserId());
-        UserDTO userFollowed = getUserById(followRequest.getFollowingUserId());
+        UserDTO userFollowing = getUser(followRequest.getUserId());
+        UserDTO userFollowed = getUser(followRequest.getFollowingUserId());
         boolean notExisting = userFollowing.getFollowing().add(userFollowed);
         if (notExisting) {
             userFollowed.getFollowers().add(userFollowing);
-            userRepository.save(userMapper.toUserEntity(userFollowing));
-            userRepository.save(userMapper.toUserEntity(userFollowed));
+            userDao.update(userFollowing);
+            userDao.update(userFollowed);
             notificationService.sendFollowNotification(userFollowing, userFollowed);
         }
         return followRequest;
     }
 
     public FollowRequest unfollowUser(FollowRequest followRequest) {
-        UserDTO userFollowing = getUserById(followRequest.getUserId());
-        UserDTO userFollowed = getUserById(followRequest.getFollowingUserId());
+        UserDTO userFollowing = getUser(followRequest.getUserId());
+        UserDTO userFollowed = getUser(followRequest.getFollowingUserId());
         userFollowing.getFollowing().remove(userFollowed);
         userFollowed.getFollowers().remove(userFollowing);
-        userRepository.save(userMapper.toUserEntity(userFollowing));
-        userRepository.save(userMapper.toUserEntity(userFollowed));
+        userDao.update(userFollowing);
+        userDao.update(userFollowed);
         return followRequest;
     }
 
     public Page<UserDTO> getAllFollowers(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         List<UserDTO> users = user.getFollowers().stream().toList();
         return new PageImpl<>(pagedListHolderFromRequestUser(pageRequest, users).getPageList());
 
@@ -139,13 +143,13 @@ public class UserService {
 
     public Page<UserDTO> getAllFollowing(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         List<UserDTO> users = user.getFollowing().stream().toList();
         return new PageImpl<UserDTO>(pagedListHolderFromRequestUser(pageRequest, users).getPageList());
     }
 
     public RecordsDTO readNews(CreateReadRequest request) {
-        UserDTO user = getUserById(request.getUserId());
+        UserDTO user = getUser(request.getUserId());
         return recordsService.readRecord(user, request.getNewsId());
     }
 
@@ -155,17 +159,17 @@ public class UserService {
         if (sortBy == null || sortBy.equals(""))
             sortBy = "recordId";
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(userId,likes,bookmarks)).getPageList());
     }
 
     public UserDTO getUserByEmail(String email) {
-        return userMapper.toUserDTO(userRepository.findByEmail(email));
+        return userDao.getByEmail(email);
     }
 
     public Page<NewsDTO> getLikedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         List<NewsDTO> newsDTOS = recordsService.getLikedNews(user.getUserId())
                 .stream().map(x -> x.getNews()).collect(Collectors.toList());
         return new PageImpl<NewsDTO>(pagedListHolderFromRequestNews(pageRequest, newsDTOS).getPageList());
@@ -173,7 +177,7 @@ public class UserService {
 
     public Page<NewsDTO> getBookmarkedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         List<NewsDTO> newsDTOS = recordsService.getBookmarkedNews(user)
                 .stream().map(x -> x.getNews()).collect(Collectors.toList());
         return new PageImpl<NewsDTO>(pagedListHolderFromRequestNews(pageRequest, newsDTOS).getPageList());
@@ -181,7 +185,7 @@ public class UserService {
 
     public Page<NewsDTO> getNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO users = getUserById(userId);
+        UserDTO users = getUser(userId);
         List<NewsDTO> news = users.getNews();
         return new PageImpl<NewsDTO>(pagedListHolderFromRequestNews(pageRequest, news).getPageList());
 
@@ -189,22 +193,22 @@ public class UserService {
 
     public Page<DeviceDTO> getDevices(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO users = getUserById(userId);
+        UserDTO users = getUser(userId);
         List<DeviceDTO> devices = users.getDevices();
         return new PageImpl<DeviceDTO>(pagedListHolderFromRequestDevice(pageRequest, devices).getPageList());
     }
 
     @Transactional
     public void addDevice(UUID userId, DeviceDTO device) {
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         user.getDevices().add(device);
-        userRepository.save(userMapper.toUserEntity(user));
+        userDao.save(user);
     }
 
     public void deleteDevice(UUID userId, DeviceDTO device) {
-        UserDTO user = getUserById(userId);
+        UserDTO user = getUser(userId);
         user.getDevices().remove(device);
-        userRepository.save(userMapper.toUserEntity(user));
+        userDao.save(user);
     }
 
     /*
@@ -279,10 +283,5 @@ public class UserService {
         return pagedListHolder;
     }
 
-    public UserDTO getUserByName(String authorName) {
-        UserDTO user = userMapper.toUserDTO(userRepository.findByName(authorName));
-        if(user==null)
-            throw new NullPointerException(source.getMessage("user.notfound", null, LocaleContextHolder.getLocale()));
-        return user;
-    }
+
 }

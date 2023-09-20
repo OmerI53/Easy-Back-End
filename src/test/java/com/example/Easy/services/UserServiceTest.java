@@ -103,8 +103,8 @@ class UserServiceTest {
     }
     @Test
     void reset(){
-        UserDTO user = userService.getUserById(UUID.fromString("29fa7ff8-9b42-41b5-95fb-c1f3a5f1b117"));
-        UserDTO userDTO = userService.getUserById(UUID.fromString("de26b783-8bfb-4d0e-894f-2020358b0b7a"));
+        T user = userService.getUser(UUID.fromString("29fa7ff8-9b42-41b5-95fb-c1f3a5f1b117"));
+        T userDTO = userService.getUser(UUID.fromString("de26b783-8bfb-4d0e-894f-2020358b0b7a"));
         List<RecordsDTO> recordsDTO = new LinkedList<>();
         user.getUserRecords().clear();
         user.setUserRecords(recordsDTO);

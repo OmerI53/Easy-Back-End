@@ -26,7 +26,7 @@ public class CommentService {
 
     @Transactional
     public CommentDTO postComment(CreateCommentRequest createCommentRequest) {
-        UserDTO user = userService.getUserById(createCommentRequest.getUserId());
+        UserDTO user = userService.getUser(createCommentRequest.getUserId());
         NewsDTO news = newsService.getNewsById(createCommentRequest.getNewsId());
         CommentDTO comment = CommentDTO.builder()
                 .news(news)

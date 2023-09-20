@@ -111,7 +111,7 @@ public class DeviceService {
     @Transactional
     public void logoutFromDevice(LogoutRequest logoutRequest) {
         DeviceDTO device = getDevice(logoutRequest.getDeviceId());
-        UserDTO user = userService.getUserById(logoutRequest.getUserId());
+        UserDTO user = userService.getUser(logoutRequest.getUserId());
         userService.deleteDevice(user.getUserId(), device);
         device.getUsers().remove(user);
         notificationService.unsubscribeToTopic(user.getUserId().toString(), List.of(device.getDeviceToken()));

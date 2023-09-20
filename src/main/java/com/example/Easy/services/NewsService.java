@@ -58,7 +58,7 @@ public class NewsService {
 
     @Transactional
     public NewsDTO postNews(CreateNewsRequest createNewsRequest) {
-        UserDTO user = userService.getUserById(createNewsRequest.getUserId());
+        UserDTO user = userService.getUser(createNewsRequest.getUserId());
         CategoryDTO category = categoryService.getCategoryByName(createNewsRequest.getCategory());
         String imageUrl;
         try {
@@ -149,14 +149,14 @@ public class NewsService {
     //-----Like and Bookmark function-----
     public String likePost(UUID newsId, UUID userId, Boolean bool) {
         NewsDTO news = getNewsById(newsId);
-        UserDTO user = userService.getUserById(userId);
+        UserDTO user = userService.getUser(userId);
         recordsService.setlike(user.getUserId(), news.getNewsId(), bool);
         return "liked";
     }
 
     public String bookmark(UUID newsId, UUID userId, Boolean bool) {
         NewsDTO news = getNewsById(newsId);
-        UserDTO user = userService.getUserById(userId);
+        UserDTO user = userService.getUser(userId);
         recordsService.setbookmark(user.getUserId(), news.getNewsId(), bool);
         return "bookmarked";
     }
