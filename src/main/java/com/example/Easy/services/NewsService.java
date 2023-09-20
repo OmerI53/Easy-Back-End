@@ -1,19 +1,16 @@
 package com.example.Easy.services;
 
-import com.example.Easy.mappers.NewsMapper;
 import com.example.Easy.models.CategoryDTO;
 import com.example.Easy.models.CommentDTO;
 import com.example.Easy.models.NewsDTO;
 import com.example.Easy.models.UserDTO;
-import com.example.Easy.repository.NewsRepository;
-import com.example.Easy.repository.specifications.NewsSpecifications;
+import com.example.Easy.repository.dao.NewsDao;
 import com.example.Easy.requests.CreateInteractionRequest;
 import com.example.Easy.requests.CreateNewsRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PagedListHolder;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,15 +21,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class NewsService {
 
-    private final NewsRepository newsRepository;
-    private final NewsMapper newsMapper;
     private final UserService userService;
+    private final NewsDao newsDao;
     private final CategoryService categoryService;
     private final RecordsService recordsService;
     private final ImageService imageService;
@@ -44,16 +39,11 @@ public class NewsService {
 
     public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy,String category, String title, String authorName) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        return new PageImpl<>(pagedListHolderFromRequest(pageRequest
-                , newsRepository.findAll(NewsSpecifications.getSpecifiedNews(category,title,authorName))
-                        .stream().map(newsMapper::toNewsDTO)
-                        .collect(Collectors.toList()))
-                .getPageList());
+        return new PageImpl<>(pagedListHolderFromRequest(pageRequest,newsDao.getAll(category,title,authorName)).getPageList());
     }
 
     public NewsDTO getNewsById(UUID newsId) {
-        return newsMapper.toNewsDTO(newsRepository.findById(newsId)
-                .orElseThrow(() -> new NullPointerException(source.getMessage("news.notfound", null, LocaleContextHolder.getLocale()))));
+        return newsDao.get(newsId);
     }
 
     @Transactional
@@ -76,7 +66,7 @@ public class NewsService {
                 .title(createNewsRequest.getTitle())
                 .build();
 
-        return newsMapper.toNewsDTO(newsRepository.save(newsMapper.toNewsEntity(news)));
+        return newsDao.save(news);
 
     }
 
@@ -96,20 +86,20 @@ public class NewsService {
                 throw new RuntimeException(e);
             }
         }
-        return newsMapper.toNewsDTO(newsRepository.save(newsMapper.toNewsEntity(newsDTO)));
+        return newsDao.save(newsDTO);
     }
 
     @Transactional
     public NewsDTO deletePostById(UUID newsUUID) {
         NewsDTO newsDTO = getNewsById(newsUUID);
-        newsRepository.deleteById(newsUUID);
+        newsDao.delete(newsDTO);
         return newsDTO;
     }
 
     @Transactional
     public void addComment(NewsDTO news, CommentDTO comment) {
         news.getComments().add(comment);
-        newsRepository.save(newsMapper.toNewsEntity(news));
+        newsDao.save(news);
     }
 
     public Page<CommentDTO> getComments(UUID newsId, Integer pageNumber, Integer pageSize, String sortBy) {
