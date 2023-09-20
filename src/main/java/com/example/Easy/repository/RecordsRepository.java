@@ -2,13 +2,14 @@ package com.example.Easy.repository;
 
 import com.example.Easy.entities.RecordsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface RecordsRepository extends JpaRepository<RecordsEntity, UUID> {
+public interface RecordsRepository extends JpaRepository<RecordsEntity, UUID>, JpaSpecificationExecutor<RecordsEntity> {
 
     @Query(value="select * from records a where a.user_user_id=:userId",
             nativeQuery=true)

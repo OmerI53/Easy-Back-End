@@ -6,6 +6,7 @@ import com.example.Easy.models.NewsDTO;
 import com.example.Easy.models.RecordsDTO;
 import com.example.Easy.models.UserDTO;
 import com.example.Easy.repository.RecordsRepository;
+import com.example.Easy.repository.specifications.RecordsSpecifications;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 
 @Service
 public class RecordsService {
@@ -93,5 +95,9 @@ public class RecordsService {
                 .collect(Collectors.toList());
     }
 
-
+    public List<RecordsDTO> getUserRecords(UUID userId,Boolean likes, Boolean bookmarks) {
+        return recordsRepository.findAll(RecordsSpecifications.getSpecifiedRecords(userId,likes,bookmarks))
+                .stream().map(recordsMapper::toRecordsDTO)
+                .collect(Collectors.toList());
+    }
 }

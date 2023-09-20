@@ -5,13 +5,14 @@ import com.example.Easy.entities.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface NewsRepository extends JpaRepository<NewsEntity, UUID> {
+public interface NewsRepository extends JpaRepository<NewsEntity, UUID>, JpaSpecificationExecutor<NewsEntity> {
     Page<NewsEntity> findByTitle(String title, Pageable pageable);
 
     @Query(value="select * from news a where a.category_category_id= :categoryId",

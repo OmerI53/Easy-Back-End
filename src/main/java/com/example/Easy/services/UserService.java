@@ -32,6 +32,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
     private final ImageService imageService;
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
@@ -73,9 +74,7 @@ public class UserService {
 
     public Page<UserDTO> listUsers(String name, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        if (name == null || name.equals(""))
-            return userRepository.findAll(pageRequest).map(userMapper::toUserDTO);
-        return userRepository.findByName(name, pageRequest).map(userMapper::toUserDTO);
+        return userRepository.findAll(pageRequest).map(userMapper::toUserDTO);
     }
 
     public UserDTO getUserById(UUID userId) {
@@ -155,31 +154,9 @@ public class UserService {
         //Default sortby is only for user
         if (sortBy == null || sortBy.equals(""))
             sortBy = "recordId";
-
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
         UserDTO user = getUserById(userId);
-
-
-        boolean finalLikes = likes != null && likes;
-        boolean finalBookmarks = bookmarks != null && bookmarks;
-        return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(user.getUserId())
-                .stream()
-                .filter(x -> (x.isPostlike() || (!x.isPostlike() & !finalLikes)))
-                .filter(x -> (x.isPostbookmark() || (!x.isPostbookmark() & !finalBookmarks)))
-                .collect(Collectors.toList())).getPageList());
-
-        /*
-        if (likes == null && bookmarks == null)
-            return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(user.getUserId())).getPageList());
-        if (likes != null && likes == true)
-            return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(user.getUserId())
-                    .stream().filter(RecordsDTO::isPostlike).collect(Collectors.toList())).getPageList());
-        if (bookmarks != null && bookmarks == true)
-            return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(user.getUserId())
-                    .stream().filter(RecordsDTO::isPostbookmark).collect(Collectors.toList())).getPageList());
-        return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(user.getUserId())
-                .stream().filter(x -> x.isPostbookmark() && x.isPostlike()).collect(Collectors.toList())).getPageList());
-         */
+        return new PageImpl<>(pagedListHolderFromRequestRecords(pageRequest, recordsService.getUserRecords(userId,likes,bookmarks)).getPageList());
     }
 
     public UserDTO getUserByEmail(String email) {
@@ -302,4 +279,10 @@ public class UserService {
         return pagedListHolder;
     }
 
+    public UserDTO getUserByName(String authorName) {
+        UserDTO user = userMapper.toUserDTO(userRepository.findByName(authorName));
+        if(user==null)
+            throw new NullPointerException(source.getMessage("user.notfound", null, LocaleContextHolder.getLocale()));
+        return user;
+    }
 }

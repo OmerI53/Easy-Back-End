@@ -6,6 +6,7 @@ import com.example.Easy.models.CommentDTO;
 import com.example.Easy.models.NewsDTO;
 import com.example.Easy.models.UserDTO;
 import com.example.Easy.repository.NewsRepository;
+import com.example.Easy.repository.specifications.NewsSpecifications;
 import com.example.Easy.requests.CreateInteractionRequest;
 import com.example.Easy.requests.CreateNewsRequest;
 import jakarta.transaction.Transactional;
@@ -41,33 +42,10 @@ public class NewsService {
     private final static int DEFAULT_PAGE_SIZE = 25;
     private final static String DEFAULT_SORT = "creationTime";
 
-
-    public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy, String category, String title, UUID userId) {
-        //add userId
-
-
-        if (category == null && title == null) { // no category or title given
-            PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-            return newsRepository.findAll(pageRequest).map(newsMapper::toNewsDTO);
-        }
-        if (category != null && title != null) { // both category and title given
-            CategoryDTO categoryDTO = categoryService.getCategoryByName(category);
-            PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-            return new PageImpl<>(pagedListHolderFromRequest(pageRequest
-                    , newsRepository.findByTitleAndCategoryid(title, categoryDTO.getCategoryId())
-                            .stream().map(newsMapper::toNewsDTO)
-                            .collect(Collectors.toList()))
-                    .getPageList());
-        }
-        if (category == null) { // only title given
-            PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-            return newsRepository.findByTitle(title, pageRequest).map(newsMapper::toNewsDTO);
-        }
-        //only category given
-        CategoryDTO categoryDTO = categoryService.getCategoryByName(category);
+    public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy,String category, String title, String authorName) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
         return new PageImpl<>(pagedListHolderFromRequest(pageRequest
-                , newsRepository.findByCategoryid(categoryDTO.getCategoryId())
+                , newsRepository.findAll(NewsSpecifications.getSpecifiedNews(category,title,authorName))
                         .stream().map(newsMapper::toNewsDTO)
                         .collect(Collectors.toList()))
                 .getPageList());

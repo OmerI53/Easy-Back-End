@@ -28,8 +28,8 @@ public class NewsController {
                                          @RequestParam(required = false) String sortBy,
                                          @RequestParam(required = false) String category,
                                          @RequestParam(required = false) String title,
-                                         @RequestParam(required = false) UUID userId) {
-        return newsService.getAllNews(pageNumber, pageSize, sortBy, category, title,userId)
+                                         @RequestParam(required = false) String author) {
+        return newsService.getAllNews(pageNumber, pageSize, sortBy, category,title,author)
                 .map(x -> new NewsResponse(x, newsService.getInteractions(x.getNewsId())));
     }
 
