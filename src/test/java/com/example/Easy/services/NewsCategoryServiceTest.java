@@ -44,10 +44,6 @@ class NewsCategoryServiceTest {
     }
     @Test
     void addSubCategory(){
-        CategoryDTO cat1 = newsCategoryService.getNewsCategoryById(1L);
-        CategoryDTO cat2 = newsCategoryService.getNewsCategoryById(2L);
-
-
 
 
     }
@@ -67,7 +63,7 @@ class NewsCategoryServiceTest {
 
     @Test
     void getCategoryById(){
-        CategoryDTO newsCategoryDTO = newsCategoryService.getNewsCategoryById(4L);
+        CategoryDTO newsCategoryDTO = newsCategoryService.getNewsCategory(4L);
 
 
     }

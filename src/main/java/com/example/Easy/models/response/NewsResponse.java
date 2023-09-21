@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.UUID;
 
 @Getter
@@ -24,34 +23,20 @@ public class NewsResponse extends BaseResponse{
     private Integer likes;
     private Integer bookmarks;
     private Integer views;
-
     public NewsResponse(NewsDTO newsDTO) {
         this.newsId = newsDTO.getNewsId();
         this.title = newsDTO.getTitle();
         this.text = newsDTO.getText();
         this.image = newsDTO.getImage();
         this.creationTime = newsDTO.getCreationTime();
+        this.category = newsDTO.getCategory().getName();
+        this.likes= newsDTO.getPostLikes();
+        this.bookmarks=newsDTO.getPostBookmarks();
+        this.views=newsDTO.getPostViews();
         this.author = UserDTO.builder()
                 .name(newsDTO.getAuthor().getName())
                 .image(newsDTO.getAuthor().getImage())
                 .userId(newsDTO.getAuthor().getUserId())
                 .build();
-        this.category = newsDTO.getCategory().getName();
-    }
-    public NewsResponse(NewsDTO newsDTO, Map<String, Integer> interactions) {
-        this.newsId = newsDTO.getNewsId();
-        this.title = newsDTO.getTitle();
-        this.text = newsDTO.getText();
-        this.image = newsDTO.getImage();
-        this.creationTime = newsDTO.getCreationTime();
-        this.author = UserDTO.builder()
-                .name(newsDTO.getAuthor().getName())
-                .image(newsDTO.getAuthor().getImage())
-                .userId(newsDTO.getAuthor().getUserId())
-                .build();
-        this.category = newsDTO.getCategory().getName();
-        this.likes=interactions.get("likes");
-        this.bookmarks=interactions.get("bookmarks");
-        this.views=interactions.get("views");
     }
 }

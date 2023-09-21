@@ -7,11 +7,14 @@ import com.example.Easy.repository.specifications.NewsSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Repository
 @RequiredArgsConstructor
 public class NewsDao implements Dao<NewsDTO> {
 
@@ -32,10 +35,9 @@ public class NewsDao implements Dao<NewsDTO> {
                 .collect(Collectors.toList());
 
     }
-    public List<NewsDTO> getAll(String category, String title, String authorName) {
-        return newsRepository.findAll(NewsSpecifications.getSpecifiedNews(category,title,authorName))
-                .stream().map(newsMapper::toNewsDTO)
-                .collect(Collectors.toList());
+    public Page<NewsDTO> getAll(String category, String title, String authorName, PageRequest pageRequest) {
+        return newsRepository.findAll(NewsSpecifications.getSpecifiedNews(category,title,authorName),pageRequest)
+                .map(newsMapper::toNewsDTO);
 
     }
 

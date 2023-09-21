@@ -1,14 +1,8 @@
 package com.example.Easy.services;
 
-import com.example.Easy.models.RecordsDTO;
-import com.example.Easy.models.UserDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 
 @SpringBootTest
 class UserServiceTest {
@@ -101,17 +95,7 @@ class UserServiceTest {
 
          */
     }
-    @Test
-    void reset(){
-        T user = userService.getUser(UUID.fromString("29fa7ff8-9b42-41b5-95fb-c1f3a5f1b117"));
-        T userDTO = userService.getUser(UUID.fromString("de26b783-8bfb-4d0e-894f-2020358b0b7a"));
-        List<RecordsDTO> recordsDTO = new LinkedList<>();
-        user.getUserRecords().clear();
-        user.setUserRecords(recordsDTO);
-        List<RecordsDTO> recordsDTO2 = new LinkedList<>();
-        userDTO.getUserRecords().clear();
-        userDTO.setUserRecords(recordsDTO2);
-    }
+
 
 
 }

@@ -55,5 +55,11 @@ public class NewsEntity {
     @OneToMany(mappedBy = "news",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<RecordsEntity> newsRecord;
 
+    private int postLikes;
+
+    private int postBookmarks;
+
+    private int postViews;
+
 
 }

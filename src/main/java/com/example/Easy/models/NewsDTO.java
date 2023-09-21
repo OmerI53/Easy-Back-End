@@ -24,5 +24,8 @@ public class NewsDTO {
     private CategoryDTO category;
     private List<CommentDTO> comments;
     private List<RecordsDTO> newsRecord;
+    private int postLikes;
+    private int postBookmarks;
+    private int postViews;
 
 }

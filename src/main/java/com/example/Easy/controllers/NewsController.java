@@ -30,7 +30,7 @@ public class NewsController {
                                          @RequestParam(required = false) String title,
                                          @RequestParam(required = false) String author) {
         return newsService.getAllNews(pageNumber, pageSize, sortBy, category,title,author)
-                .map(x -> new NewsResponse(x, newsService.getInteractions(x.getNewsId())));
+                .map(NewsResponse::new);
     }
 
     @GetMapping("/{newsId}")
@@ -38,7 +38,7 @@ public class NewsController {
                                                 @RequestParam(required = false) Integer pageNumber,
                                                 @RequestParam(required = false) Integer pageSize,
                                                 @RequestParam(required = false) String sortBy) {
-        return new ResponseEntity<>(new NewsResponse(newsService.getNewsById(newsId), newsService.getInteractions(newsId)), HttpStatus.OK);
+        return new ResponseEntity<>(new NewsResponse(newsService.getNewsById(newsId)), HttpStatus.OK);
     }
     @PatchMapping("/{newsId}")
     public ResponseEntity<NewsResponse> patchNews(@PathVariable("newsId") UUID newsId,@ModelAttribute CreateNewsRequest createNewsRequest) {

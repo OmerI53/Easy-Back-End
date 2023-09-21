@@ -102,7 +102,7 @@ public class UserController {
                                                                     @RequestParam(required = false) Boolean like,
                                                                     @RequestParam(required = false) Boolean bookmark,
                                                                     @RequestHeader(name = "Accept-Language", required = false) final Locale locale) {
-        return new ResponseEntity<>(userService.getUserRecordsById(userId, pageNumber, pageSize, sortBy, like, bookmark).map(RecordsResponse::new), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserRecords(userId, pageNumber, pageSize, sortBy, like, bookmark).map(RecordsResponse::new), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/devices")

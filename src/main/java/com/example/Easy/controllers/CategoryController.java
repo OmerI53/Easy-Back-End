@@ -26,11 +26,11 @@ public class CategoryController {
     }
     @GetMapping("/category")
     public Map<String,List> getCategories(){
-        return newsCategoryService.getCategoriesHierarchy();
+        return null;
     }
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryResponse> getCategoryById(@PathVariable("categoryId") Long categoryId){
-        return  new ResponseEntity<>(new CategoryResponse(newsCategoryService.getNewsCategoryById(categoryId)),HttpStatus.OK);
+        return  new ResponseEntity<>(new CategoryResponse(newsCategoryService.getNewsCategory(categoryId)),HttpStatus.OK);
     }
     @PostMapping
     public ResponseEntity<CategoryResponse> addCategory(@RequestBody CreateCategoryRequest createCategoryRequest){

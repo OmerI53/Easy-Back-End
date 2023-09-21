@@ -8,13 +8,16 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Repository
 @RequiredArgsConstructor
 public class UserDao implements Dao<UserDTO> {
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final ResourceBundleMessageSource source;

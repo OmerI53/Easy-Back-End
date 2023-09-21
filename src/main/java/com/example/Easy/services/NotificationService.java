@@ -1,10 +1,9 @@
 package com.example.Easy.services;
 
 import com.example.Easy.entities.NotificationEntity;
-import com.example.Easy.mappers.NotificationMapper;
 import com.example.Easy.models.NotificationDTO;
 import com.example.Easy.models.UserDTO;
-import com.example.Easy.repository.NotificationRepository;
+import com.example.Easy.repository.dao.NotificationDao;
 import com.example.Easy.requests.CreateNotificationRequest;
 import com.example.Easy.requests.CreateSubscriptionRequest;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -29,8 +28,7 @@ import java.util.List;
 public class NotificationService {
 
     private final KafkaTemplate<String,String> kafkaTemplate;
-    private final NotificationRepository notificationRepository;
-    private final NotificationMapper notificationMapper;
+    private final NotificationDao notificationDao;
     private final FirebaseMessaging firebaseMessaging;
     private final ResourceBundleMessageSource source;
 
@@ -46,7 +44,7 @@ public class NotificationService {
                 .text(createNotificationRequest.getText())
                 .topic(createNotificationRequest.getTopic())
                 .build();
-        notificationRepository.save(notificationMapper.toNotificationEntity(notificationDTO));
+        notificationDao.save(notificationDTO);
 
         //build notification from notificationDTO
         Notification notification = Notification.builder()
@@ -99,7 +97,7 @@ public class NotificationService {
     }
     public Page<NotificationDTO> getMessageByTitle(String title, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber,pageSize,sortBy);
-        return notificationRepository.getNotificationByTitle(title,pageRequest).map(notificationMapper::toNotificationDTO);
+        return notificationDao.get(title,pageRequest);
     }
 
     public void sendFollowNotification(UserDTO userFollowing, UserDTO userFollowed) {

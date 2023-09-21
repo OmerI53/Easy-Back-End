@@ -1,11 +1,10 @@
 package com.example.Easy.services;
 
-import com.example.Easy.repository.dao.UserDao;
-import com.example.Easy.mappers.UserMapper;
 import com.example.Easy.models.DeviceDTO;
 import com.example.Easy.models.NewsDTO;
 import com.example.Easy.models.RecordsDTO;
 import com.example.Easy.models.UserDTO;
+import com.example.Easy.repository.dao.UserDao;
 import com.example.Easy.requests.CreateReadRequest;
 import com.example.Easy.requests.CreateUserRequest;
 import com.example.Easy.requests.FollowRequest;
@@ -23,16 +22,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserDao userDao;
-    private final UserMapper userMapper;
-
     private final ImageService imageService;
     private final AuthenticationService authenticationService;
     private final NotificationService notificationService;
@@ -153,8 +152,8 @@ public class UserService {
         return recordsService.readRecord(user, request.getNewsId());
     }
 
-    public Page<RecordsDTO> getUserRecordsById(UUID userId, Integer pageNumber, Integer pageSize, String sortBy,
-                                               Boolean likes, Boolean bookmarks) {
+    public Page<RecordsDTO> getUserRecords(UUID userId, Integer pageNumber, Integer pageSize, String sortBy,
+                                           Boolean likes, Boolean bookmarks) {
         //Default sortby is only for user
         if (sortBy == null || sortBy.equals(""))
             sortBy = "recordId";
@@ -167,21 +166,6 @@ public class UserService {
         return userDao.getByEmail(email);
     }
 
-    public Page<NewsDTO> getLikedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
-        PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUser(userId);
-        List<NewsDTO> newsDTOS = recordsService.getLikedNews(user.getUserId())
-                .stream().map(x -> x.getNews()).collect(Collectors.toList());
-        return new PageImpl<NewsDTO>(pagedListHolderFromRequestNews(pageRequest, newsDTOS).getPageList());
-    }
-
-    public Page<NewsDTO> getBookmarkedNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
-        PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        UserDTO user = getUser(userId);
-        List<NewsDTO> newsDTOS = recordsService.getBookmarkedNews(user)
-                .stream().map(x -> x.getNews()).collect(Collectors.toList());
-        return new PageImpl<NewsDTO>(pagedListHolderFromRequestNews(pageRequest, newsDTOS).getPageList());
-    }
 
     public Page<NewsDTO> getNews(UUID userId, Integer pageNumber, Integer pageSize, String sortBy) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
