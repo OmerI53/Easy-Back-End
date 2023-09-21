@@ -38,9 +38,9 @@ public class NewsService {
     private final static int DEFAULT_PAGE_SIZE = 25;
     private final static String DEFAULT_SORT = "creationTime";
 
-    public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy,String category, String title, String authorName) {
+    public Page<NewsDTO> getAllNews(Integer pageNumber, Integer pageSize, String sortBy, String category, String title, String authorName) {
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortBy);
-        return newsDao.getAll(category,title,authorName,pageRequest);
+        return newsDao.getAll(category, title, authorName, pageRequest);
     }
 
     public NewsDTO getNewsById(UUID newsId) {
@@ -51,11 +51,13 @@ public class NewsService {
     public NewsDTO postNews(CreateNewsRequest createNewsRequest) {
         UserDTO user = userService.getUser(createNewsRequest.getUserId());
         CategoryDTO category = categoryService.getNewsCategory(createNewsRequest.getCategory());
-        String imageUrl;
-        try {
-            imageUrl = imageService.uploadImage(createNewsRequest.getImage());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        String imageUrl = "";
+        if (createNewsRequest.getImage() != null) {
+            try {
+                imageUrl = imageService.uploadImage(createNewsRequest.getImage());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         NewsDTO news = NewsDTO.builder()
                 .text(createNewsRequest.getText())
@@ -72,13 +74,13 @@ public class NewsService {
     @Transactional
     public NewsDTO patchNews(UUID newsId, CreateNewsRequest createNewsRequest) {
         NewsDTO newsDTO = getNewsById(newsId);
-        if(createNewsRequest.getCategory()!=null && !createNewsRequest.getCategory().equals(""))
+        if (createNewsRequest.getCategory() != null && !createNewsRequest.getCategory().equals(""))
             newsDTO.setCategory(categoryService.getNewsCategory(createNewsRequest.getCategory()));
-        if(createNewsRequest.getTitle()!=null && !createNewsRequest.getTitle().equals(""))
+        if (createNewsRequest.getTitle() != null && !createNewsRequest.getTitle().equals(""))
             newsDTO.setTitle(createNewsRequest.getTitle());
-        if(createNewsRequest.getText()!=null && !createNewsRequest.getText().equals(""))
+        if (createNewsRequest.getText() != null && !createNewsRequest.getText().equals(""))
             newsDTO.setText(createNewsRequest.getText());
-        if(createNewsRequest.getImage()!=null) {
+        if (createNewsRequest.getImage() != null) {
             try {
                 newsDTO.setImage(imageService.uploadImage(createNewsRequest.getImage()));
             } catch (IOException e) {
@@ -141,41 +143,42 @@ public class NewsService {
         NewsDTO news = getNewsById(newsId);
         UserDTO user = userService.getUser(userId);
         recordsService.setlike(user.getUserId(), news.getNewsId(), bool);
-        if(bool)
-            news.setPostLikes(news.getPostLikes()+1);
+        if (bool)
+            news.setPostLikes(news.getPostLikes() + 1);
         else
-            news.setPostLikes(news.getPostLikes()-1);
-        if(news.getPostLikes()<0)
-            throw new RuntimeException(source.getMessage("news.bookmark.zero",null, LocaleContextHolder.getLocale()));
+            news.setPostLikes(news.getPostLikes() - 1);
+        if (news.getPostLikes() < 0)
+            throw new RuntimeException(source.getMessage("news.bookmark.zero", null, LocaleContextHolder.getLocale()));
         newsDao.save(news);
     }
+
     @Transactional
     public void bookmark(UUID newsId, UUID userId, Boolean bool) {
         NewsDTO news = getNewsById(newsId);
         UserDTO user = userService.getUser(userId);
         recordsService.setbookmark(user.getUserId(), news.getNewsId(), bool);
-        if(bool)
-            news.setPostBookmarks(news.getPostBookmarks()+1);
+        if (bool)
+            news.setPostBookmarks(news.getPostBookmarks() + 1);
         else
-            news.setPostBookmarks(news.getPostBookmarks()-1);
-        if(news.getPostBookmarks()<0)
-            throw new RuntimeException(source.getMessage("news.like.zero",null, LocaleContextHolder.getLocale()));
+            news.setPostBookmarks(news.getPostBookmarks() - 1);
+        if (news.getPostBookmarks() < 0)
+            throw new RuntimeException(source.getMessage("news.like.zero", null, LocaleContextHolder.getLocale()));
         newsDao.save(news);
     }
 
     public Map<String, Integer> getInteractions(UUID newsId) {
         NewsDTO newsDTO = getNewsById(newsId);
         Map<String, Integer> map = new HashMap<>();
-        map.put("likes",newsDTO.getPostLikes());
-        map.put("bookmarks",newsDTO.getPostBookmarks());
-        map.put("views",newsDTO.getPostViews());
+        map.put("likes", newsDTO.getPostLikes());
+        map.put("bookmarks", newsDTO.getPostBookmarks());
+        map.put("views", newsDTO.getPostViews());
         return map;
     }
 
     public Map<String, Integer> patchInteractions(CreateInteractionRequest createInteractionRequest) {
-        if(createInteractionRequest.getLike()!=null)
+        if (createInteractionRequest.getLike() != null)
             like(createInteractionRequest.getNewsId(), createInteractionRequest.getUserId(), createInteractionRequest.getLike());
-        if(createInteractionRequest.getBookmark()!=null)
+        if (createInteractionRequest.getBookmark() != null)
             bookmark(createInteractionRequest.getNewsId(), createInteractionRequest.getUserId(), createInteractionRequest.getBookmark());
         return getInteractions(createInteractionRequest.getNewsId());
     }

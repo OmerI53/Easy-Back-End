@@ -1,6 +1,6 @@
 package com.example.Easy.repository.dao;
 
-import com.example.Easy.mappers.UserMapper;
+import com.example.Easy.mappers.UserMapperImpl;
 import com.example.Easy.models.UserDTO;
 import com.example.Easy.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserDao implements Dao<UserDTO> {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    private final UserMapperImpl userMapper;
     private final ResourceBundleMessageSource source;
 
     @Override
