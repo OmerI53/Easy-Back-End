@@ -89,14 +89,14 @@ public class UserMapperImpl implements UserMapper {
                 .newsId(newsEntity.getNewsId())
                 .title(newsEntity.getTitle())
                 .text(newsEntity.getText())
-                .category(toCategoryDto(newsEntity.getCategory()))
+                .category(toCategoryDTO(newsEntity.getCategory()))
                 .creationTime(newsEntity.getCreationTime())
                 .image(newsEntity.getImage())
                 .author(userDTO)
                 .build();
     }
 
-    private CategoryDTO toCategoryDto(CategoryEntity category) {
+    private CategoryDTO toCategoryDTO(CategoryEntity category) {
         if (category == null)
             return null;
         return CategoryDTO.builder()

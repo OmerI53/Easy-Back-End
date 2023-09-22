@@ -1,6 +1,6 @@
 package com.example.Easy.repository.dao;
 
-import com.example.Easy.mappers.NewsMapper;
+import com.example.Easy.mappers.NewsMapperImpl;
 import com.example.Easy.models.NewsDTO;
 import com.example.Easy.repository.NewsRepository;
 import com.example.Easy.repository.specifications.NewsSpecifications;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class NewsDao implements Dao<NewsDTO> {
 
     private final NewsRepository newsRepository;
-    private final NewsMapper newsMapper;
+    private final NewsMapperImpl newsMapper;
     private final ResourceBundleMessageSource source;
 
     @Override

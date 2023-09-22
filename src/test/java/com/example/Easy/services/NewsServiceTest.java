@@ -1,6 +1,6 @@
 package com.example.Easy.services;
 
-import com.example.Easy.mappers.NewsCategoryMapper;
+import com.example.Easy.mappers.CategoryMapper;
 import com.example.Easy.mappers.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ class NewsServiceTest {
     @Autowired
     CategoryService newsCategoryService;
     @Autowired
-    NewsCategoryMapper newsCategoryMapper;
+    CategoryMapper newsCategoryMapper;
     @Autowired
     UserService userService;
     @Autowired

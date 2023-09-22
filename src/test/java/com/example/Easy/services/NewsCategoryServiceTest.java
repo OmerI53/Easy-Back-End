@@ -1,6 +1,6 @@
 package com.example.Easy.services;
 
-import com.example.Easy.mappers.NewsCategoryMapper;
+import com.example.Easy.mappers.CategoryMapper;
 import com.example.Easy.models.CategoryDTO;
 import com.example.Easy.requests.CreateCategoryRequest;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ class NewsCategoryServiceTest {
     CategoryService newsCategoryService;
 
     @Autowired
-    NewsCategoryMapper newsCategoryMapper;
+    CategoryMapper newsCategoryMapper;
 
 
     @Test
