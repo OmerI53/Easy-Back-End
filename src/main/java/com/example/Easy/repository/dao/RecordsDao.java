@@ -1,6 +1,6 @@
 package com.example.Easy.repository.dao;
 
-import com.example.Easy.mappers.RecordsMapper;
+import com.example.Easy.mappers.RecordsMapperImpl;
 import com.example.Easy.models.RecordsDTO;
 import com.example.Easy.repository.RecordsRepository;
 import com.example.Easy.repository.specifications.RecordsSpecifications;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RecordsDao implements Dao<RecordsDTO> {
     private final RecordsRepository recordsRepository;
-    private final RecordsMapper recordsMapper;
+    private final RecordsMapperImpl recordsMapper;
     private final ResourceBundleMessageSource source;
     @Override
     public RecordsDTO get(UUID id) {

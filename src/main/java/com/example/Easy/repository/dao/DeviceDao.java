@@ -1,6 +1,6 @@
 package com.example.Easy.repository.dao;
 
-import com.example.Easy.mappers.DeviceMapper;
+import com.example.Easy.mappers.DeviceMapperImpl;
 import com.example.Easy.models.DeviceDTO;
 import com.example.Easy.models.DeviceType;
 import com.example.Easy.repository.DeviceRepository;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class DeviceDao implements Dao<DeviceDTO>{
 
     private final DeviceRepository deviceRepository;
-    private final DeviceMapper deviceMapper;
+    private final DeviceMapperImpl deviceMapper;
     private final ResourceBundleMessageSource source;
 
     @Override

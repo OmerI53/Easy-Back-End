@@ -1,6 +1,6 @@
 package com.example.Easy.repository.dao;
 
-import com.example.Easy.mappers.CommentMapper;
+import com.example.Easy.mappers.CommentMapperImpl;
 import com.example.Easy.models.CommentDTO;
 import com.example.Easy.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class CommentDao implements Dao<CommentDTO>{
 
     private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
+    private final CommentMapperImpl commentMapper;
     private final ResourceBundleMessageSource source;
 
     @Override

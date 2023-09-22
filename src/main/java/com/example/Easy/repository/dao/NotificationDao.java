@@ -1,6 +1,6 @@
 package com.example.Easy.repository.dao;
 
-import com.example.Easy.mappers.NotificationMapper;
+import com.example.Easy.mappers.NotificationMapperImpl;
 import com.example.Easy.models.NotificationDTO;
 import com.example.Easy.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.UUID;
 public class NotificationDao implements Dao<NotificationDTO> {
 
     private final NotificationRepository notificationRepository;
-    private final NotificationMapper notificationMapper;
+    private final NotificationMapperImpl notificationMapper;
     private final ResourceBundleMessageSource source;
 
     @Override
