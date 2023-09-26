@@ -26,6 +26,7 @@ public class UserMapperImpl implements UserMapper {
                 .followers(userSetMapper(userEntity.getFollowers()))
                 .following(userSetMapper(userEntity.getFollowing()))
                 .email(userEntity.getEmail())
+                .password(userEntity.getPassword())
                 .role(userEntity.getRole())
                 .build();
         userDTO.setNews(newsListMapper(userEntity.getNews(), userDTO));
@@ -137,6 +138,7 @@ public class UserMapperImpl implements UserMapper {
                 .followers(userSetMapperEntity(userDTO.getFollowers()))
                 .following(userSetMapperEntity(userDTO.getFollowing()))
                 .email(userDTO.getEmail())
+                .password(userDTO.getPassword())
                 .role(userDTO.getRole())
                 .build();
         userEntity.setNews(newsListMapperEntity(userDTO.getNews(), userEntity));

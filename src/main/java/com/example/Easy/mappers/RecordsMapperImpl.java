@@ -65,15 +65,17 @@ public class RecordsMapperImpl implements RecordsMapper {
 
     @Override
     public RecordsEntity toRecordsEntity(RecordsDTO recordsDTO) {
-        RecordsEntity recordsEntity = RecordsEntity.builder()
+        if(recordsDTO==null)
+            return null;
+        return RecordsEntity.builder()
                 .recordId(recordsDTO.getRecordId())
                 .user(toUserEntity(recordsDTO.getUser()))
                 .news(toNewsEntity(recordsDTO.getNews()))
+                .newsCategory(toCategoryEntity(recordsDTO.getNewsCategory()))
                 .repeatedRead(recordsDTO.getRepeatedRead())
                 .postlike(recordsDTO.isPostlike())
                 .postbookmark(recordsDTO.isPostbookmark())
                 .build();
-        return null;
     }
     private NewsEntity toNewsEntity(NewsDTO newsDTO) {
         if (newsDTO == null)
@@ -99,10 +101,9 @@ public class RecordsMapperImpl implements RecordsMapper {
     private CategoryEntity toCategoryEntity(CategoryDTO category) {
         if (category == null)
             return null;
-        CategoryEntity categoryEntity = CategoryEntity.builder()
+        return CategoryEntity.builder()
                 .categoryId(category.getCategoryId())
                 .name(category.getName())
                 .build();
-        return categoryEntity;
     }
 }
